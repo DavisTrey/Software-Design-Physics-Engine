@@ -1,0 +1,20 @@
+<model>
+  <name>Gelatinous Cube</name>
+  <author></author>
+
+  <nodes>
+    <mass id="m1" x="165" y="10" vx="0" vy="0"/>
+    <mass id="m2" x="285" y="10" vx="0" vy="0"/>
+    <mass id="m3" x="285" y="100" vx="0" vy="0"/>
+    <mass id="m4" x="165" y="100" vx="0" vy="0"/>
+  </nodes>
+
+  <links>
+    <spring a="m1" b="m2"/>
+    <spring a="m2" b="m3"/>
+    <spring a="m3" b="m4"/>
+    <spring a="m4" b="m1"/>
+    <spring a="m1" b="m3"/>
+    <spring a="m2" b="m4"/>
+  </links>
+</model>

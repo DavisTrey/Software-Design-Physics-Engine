@@ -1,0 +1,42 @@
+<model>
+    <name>Dainty Walker</name>
+    <author>Ed Burton</author>
+
+    <nodes>
+        <mass id="m0" x="392.49963" y="73.369934" vx="-0.8951623" vy="-0.45419145"/>
+        <mass id="m1" x="337.63043" y="79.90161" vx="-0.7782596" vy="-0.05345259"/>
+        <mass id="m2" x="244.59506" y="78.90823" vx="-0.71850866" vy="-0.17758165"/>
+        <mass id="m3" x="186.78564" y="81.27075" vx="-1.0234175" vy="0.275354"/>
+        <mass id="m4" x="204.06589" y="2.0" vx="0.009436024" vy="0.5353442"/>
+        <mass id="m5" x="292.18124" y="52.208008" vx="-1.1719137" vy="-0.26688462"/>
+        <mass id="m6" x="339.63538" y="8.446869" vx="-1.6100771" vy="-0.7390088"/>
+        <mass id="m7" x="291.58768" y="109.44028" vx="-0.69016933" vy="-0.023878502"/>
+        <mass id="m8" x="369.77155" y="2.0" vx="0.021985983" vy="0.66246766"/>
+        <mass id="m9" x="219.71793" y="11.564728" vx="-3.2211688" vy="-0.43107113"/>
+    </nodes>
+
+    <links>
+        <spring a="m0" b="m1" restlength="55.0"/>
+        <spring a="m1" b="m2" restlength="93.0"/>
+        <spring a="m2" b="m3" restlength="58.0"/>
+        <spring a="m2" b="m5" restlength="54.589375"/>
+        <spring a="m5" b="m1" restlength="51.971146"/>
+        <spring a="m1" b="m7" restlength="55.470715"/>
+        <spring a="m7" b="m2" restlength="56.302753"/>
+        <spring a="m7" b="m5" restlength="57.035076"/>
+        <spring a="m5" b="m3" restlength="109.14211"/>
+        <spring a="m3" b="m7" restlength="108.52189"/>
+        <spring a="m7" b="m0" restlength="106.60675"/>
+        <spring a="m0" b="m5" restlength="103.32473"/>
+        <spring a="m0" b="m2" restlength="148.19601"/>
+        <spring a="m1" b="m3" restlength="150.78603"/>
+        <muscle a="m3" b="m4" restlength="79.47956" amplitude="0.5"/>
+        <muscle a="m1" b="m6" restlength="77.7946" amplitude="0.5"/>
+        <muscle a="m6" b="m0" restlength="80.23092" amplitude="0.5"/>
+        <muscle a="m0" b="m8" restlength="78.92401" amplitude="0.5"/>
+        <muscle a="m8" b="m1" restlength="77.16217" amplitude="0.5"/>
+        <muscle a="m2" b="m9" restlength="79.47956" amplitude="0.5"/>
+        <muscle a="m9" b="m3" restlength="79.47956" amplitude="0.5"/>
+        <muscle a="m4" b="m2" restlength="78.77182" amplitude="0.5"/>
+    </links>
+</model>

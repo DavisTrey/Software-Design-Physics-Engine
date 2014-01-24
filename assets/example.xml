@@ -1,0 +1,16 @@
+<model>
+    <name>Example</name>
+    <author>Robert Duvall</author>
+
+    <nodes>
+        <mass id="m0" x="100" y="100" vx="0" vy="0" mass="5.0"/>
+        <mass id="m1" x="300" y="100" vx="0" vy="0" mass="7.0"/>
+        <mass id="m2" x="200" y="300" vx="0" vy="0" mass="10.0"/>
+    </nodes>
+
+    <links>
+        <spring a="m0" b="m1" restlength="150.0" constant="0.05"/>
+        <spring a="m0" b="m2" restlength="100.0" constant="0.05"/>
+        <spring a="m1" b="m2" restlength="100.0" constant="0.05"/>
+    </links>
+</model>
