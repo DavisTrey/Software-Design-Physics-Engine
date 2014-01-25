@@ -1,0 +1,82 @@
+	Springies Design Document
+Davis Treybig
+Jacob Lettie
+
+In order to represent Spring-Mass models, we envision that there would be three key classes 
+that perform the majority of the functionality. These three classes would be the Mass class, 
+the Spring class, and the Muscle class, and these classes would fall under two hierarchies. 
+The Mass class would be an independent class, whereas the Spring class would be a superclass 
+of the Muscle class (though both would be instantiable). We decided to structure the classes 
+in this way because, based on the Sodaplay constructor application, muscles are simply springs
+ with extra functionality, but masses and springs/muscles behave in fundamentally different 
+ ways. The overall functionality of this system would be that, every frame, every single 
+ Spring and Muscle class automatically used their ApplyForce methods to every attached Mass 
+ object. Afterwards, every Mass object would accelerate based on the net force being applied. 
+
+The Mass class would contain all the variables needed to read in and store data from the masses
+in the simulation, and all the methods needed to implement the physics of how the mass moves. 
+Since masses all are affected by gravity in the same way, a static class variable for gravity
+would be shared by all the Mass objects. Mass objects would also have instance variables 
+representing their location, and their mass, for use in calculating how other forces act on
+them. They would also have x and y net spring force instance variables to store the forces 
+applied by all the springs and muscles connected to them. This is all the information we 
+need the mass move correctly. 
+	To give the Mass object its expected behavior, we would have a Move method that calculated 
+the net force on the Mass object, and moved it accordingly. In order for this method to work 
+properly, we would also need to add a receive spring forces method which attached Springs 
+could call. This method would allow Springs and Muscles to add their force to NetXForce and 
+NetYForce instance variables. 
+
+The Spring class would contain all the variables needed to read in and store data from the 
+springs in the simulation, and all the methods needed to calculate the forces the spring 
+exerts on its corresponding masses. Since all Springs will share the same spring constant, 
+there will be a static variable to this effect dictating how the springs exert forces due to 
+their length. To describe the location of the Spring itself and to allow for length calculations 
+to determine the force it exerts, each spring would have instance variables for the Mass 
+objects it is connected to, so it can calculate the force it should be exerting on each. 
+	To give the Spring object its expected behavior, we would have a method that calculates 
+the force that it exerts on each Mass, ApplySpringForce. This calculation of force would 
+be based only on length and the spring constant (length would be calculated via the two 
+attached objects). ApplyForce would call this method, and is what Mass objects that are 
+attached to the Spring would call to update their net force. 
+
+	The Muscle class would be a subclass of the Spring class and, for the most part, would 
+function in a similar way. It would store the two Mass objects it is attached to as instance 
+variables and would use methods to calculate what force it should apply to each of those 
+objects every frame. The difference, however, is that in addition to calculating the force 
+due to its Spring nature (based on its length, calculated via the two objects it is between, 
+and its spring constant, a class variable), it would need to be able to calculate the force it 
+applies due to its muscle characteristics.  As such, this class would hold the maximum 
+amplitude of the forcing function as well as the frequency of the forcing function as class 
+variables since all muscles share these traits. In addition, each muscle would have an 
+individual instance variable for its factor of the maximum amplitude as well as its phase. 
+This class would still have a method to apply the force to attached objects based on its 
+string characteristics, but would also have a method to apply the force to attached objects 
+based on its muscle characteristics. Finally, its ApplyForce method would call both of the 
+aforementioned methods. 
+
+Overview: 
+
+Mass class
+Class Variable: Gravity
+Instance Variables: Location, Mass, NetXForce, NetYForce
+Methods:
+Move: Acceleration of the mass based on NetYForce and NetXForce
+ReceiveForce: Method called by Spring and Muscle classes to add to the NetXForce and NetYForce variables
+
+Spring Class
+Class Variable: Spring Constant
+Instance Variables: The 2 connected Mass Objects
+Methods: 
+	ApplySpringForce: Apply the force created by spring characteristics to the attached Masses
+	ApplyForce: Apply the total force from this object (Calls ApplySpringForce)
+
+Muscle Class (extends Springs)
+Class Variable: Max amplitude, frequency (period), Spring Constant
+Instance Variables: Amplitude factor, offset (Phase), 2 Connected Mass Objects
+Methods: 
+	ApplySpringForce: Apply the force created by spring characteristics to the attached Masses
+	ApplyMuscleForce: Apply the force created by muscle characteristics to the attached Masses
+	ApplyForce: Apply the total force from this object (Calls ApplySpringForce and ApplyMuscleForce)
+  
+	
