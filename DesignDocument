@@ -77,6 +77,7 @@ Class Variable: Max amplitude, frequency (period), Spring Constant
 Instance Variables: Amplitude factor, offset (Phase), 2 Connected Mass Objects
 Methods: 
 	ApplyForce: Apply the total force from this object to attached objects
+	ModifyRestLength: Alters the rest length based on the sine wave
 	Setter methods for its phase, amplitude factor, Spring constant, rest length, connected objects
   
 	
