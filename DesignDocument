@@ -64,6 +64,7 @@ Instance Variables: Location, Mass, NetXForce, NetYForce
 Methods:
 	Move: Acceleration of the mass based on NetYForce and NetXForce
 	ReceiveForce: Method called by Spring and Muscle classes to add to the NetXForce and NetYForce variables
+	Setter methods for Gravity, Mass
 
 Spring Class
 Class Variable: Spring Constant, Rest Length
