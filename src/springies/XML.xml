@@ -30,6 +30,17 @@
 		<xpos>.6</xpos>
 		<ypos>.6</ypos>
 	</mass>
+	<spring>
+		<constant>.5</constant>
+		<id1>FixedMass1</id1>
+		<id2>FixedMass2</id2>
+		<rest>50</rest>
+	</spring>
+	<spring>
+		<id1>FixedMass1</id1>
+		<id2>Mass2</id2>
+		<rest>50</rest>
+	</spring>
 </fixedMasses>
 
 
