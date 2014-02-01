@@ -25,7 +25,9 @@ need the mass move correctly.
 the net force on the Mass object, and moved it accordingly. In order for this method to work 
 properly, we would also need to add a receive spring forces method which attached Springs 
 could call. This method would allow Springs and Muscles to add their force to NetXForce and 
-NetYForce instance variables. 
+NetYForce instance variables. This could be implemented using jbox2d by making Mass objects 
+jbox2d bodies by creating a body definition within the class; this would allow us to use methods
+in jbox2d such as applyForce to deal with force interactions, gravity, movement, etc.
 
 The Spring class would contain all the variables needed to read in and store data from the 
 springs in the simulation, and all the methods needed to calculate the forces the spring 
@@ -38,7 +40,9 @@ objects it is connected to, so it can calculate the force it should be exerting 
 the force that it exerts on each Mass, ApplySpringForce. This calculation of force would 
 be based only on length and the spring constant (length would be calculated via the two 
 attached objects). ApplyForce would call this method, and is what Mass objects that are 
-attached to the Spring would call to update their net force. 
+attached to the Spring would call to update their net force. A natural way to implement this
+using jbox2d would be to make these have fixture definitions within the class, corresponding
+to their attached bodies, allowing jbox2d to handle the more complex interactions.
 
 	The Muscle class would be a subclass of the Spring class and, for the most part, would 
 function in a similar way. It would store the two Mass objects it is attached to as instance 
