@@ -16,6 +16,7 @@ import jgame.JGObject;
 import jgame.platform.JGEngine;
 
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -25,6 +26,7 @@ import org.w3c.dom.NodeList;
 @SuppressWarnings("serial")
 public class Springies extends JGEngine
 {
+	public static double viscosity = 30;
     public Springies ()
     {
         // set the window size
@@ -188,6 +190,9 @@ public class Springies extends JGEngine
     public void doFrame ()
     {
         // update game objects
+    	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
+    		b.applyForce(new Vec2((float)viscosity*-1*b.getLinearVelocity().x, (float)viscosity*-1*b.getLinearVelocity().y), b.m_xf.position);
+    	}
         WorldManager.getWorld().step(1f, 1);
         moveObjects();
         //checkCollision(1 + 2, 1);
