@@ -19,6 +19,17 @@
 		<yVeloc>1</yVeloc>
 		<massVal>2</massVal>
 	</mass>
+	<mass>
+		<id>Mass2</id>
+		<xpos>.6</xpos>
+		<ypos>.6</ypos>
+		<massVal>2</massVal>
+	</mass>
+	<mass>
+		<id>Mass3</id>
+		<xpos>.6</xpos>
+		<ypos>.6</ypos>
+	</mass>
 </fixedMasses>
 
 

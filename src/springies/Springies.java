@@ -23,10 +23,10 @@ import org.w3c.dom.NodeList;
 
 
 @SuppressWarnings("serial")
-public class Springies extends JGEngine
-{
-    public Springies ()
-    {
+public class Springies extends JGEngine{
+	private static final String DEFAULT_VELOCITY="0";
+	private static final String DEFAULT_MASS="1";
+    public Springies (){
         // set the window size
         int height = 480;
         double aspect = 16.0 / 9.0;
@@ -34,8 +34,7 @@ public class Springies extends JGEngine
     }
 
     @Override
-    public void initCanvas ()
-    {
+    public void initCanvas (){
         // I have no idea what tiles do...
         setCanvasSettings(1, // width of the canvas in tiles
                           1, // height of the canvas in tiles
@@ -71,8 +70,8 @@ public class Springies extends JGEngine
 			Document doc = dBuilder.parse(dataFile);
 			doc.getDocumentElement().normalize();
 
-			NodeList nodes = doc.getElementsByTagName("fixed");
-			
+			//Reading Fixed Masses
+			NodeList nodes = doc.getElementsByTagName("fixed");	
 			for (int i = 0; i < nodes.getLength(); i++) {
 				Node node = nodes.item(i);
 
@@ -89,18 +88,33 @@ public class Springies extends JGEngine
 					
 				}
 			}
-			
+			//Reading Regular Masses
 			nodes=doc.getElementsByTagName("mass");
 			for(int i=0; i <nodes.getLength(); i++){
 				Node node=nodes.item(i);
 				if(node.getNodeType()==Node.ELEMENT_NODE){
 					Element element = (Element) node;
+				
 					String id=getValue("id", element);
 					String xpos=getValue("xpos", element);
 					String ypos=getValue("ypos", element);
-					String xVeloc=getValue("xVeloc", element);
-					String yVeloc=getValue("yVeloc", element);
-					String mass=getValue("massVal", element);
+					String xVeloc=null;
+					String yVeloc=null;
+					String mass=null;
+					if(element.hasAttribute("xVeloc")){
+						xVeloc=getValue("xVeloc", element);
+						yVeloc=getValue("yVeloc", element);
+					}
+					else{
+						xVeloc=DEFAULT_VELOCITY;
+						yVeloc=DEFAULT_VELOCITY;
+					}
+					if(element.hasAttribute("massVal")){
+						mass=getValue("massVal", element);
+					}
+					else{
+						mass=DEFAULT_MASS;
+					}
 					createMass(id, xpos, ypos, xVeloc, yVeloc, mass);
 					
 					System.out.println("ID: " + id);
@@ -108,6 +122,7 @@ public class Springies extends JGEngine
 					System.out.println("Y Position: " + ypos);
 					System.out.println("X Velocity: "+ xVeloc);
 					System.out.println("Y Velocity: "+ yVeloc);
+					System.out.println("Mass: " + mass);
 				}
 				
 			}
