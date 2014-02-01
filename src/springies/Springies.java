@@ -6,6 +6,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import jboxGlue.FixedMass;
+import jboxGlue.Mass;
 import jboxGlue.PhysicalObject;
 import jboxGlue.PhysicalObjectCircle;
 import jboxGlue.PhysicalObjectRect;
@@ -70,9 +71,7 @@ public class Springies extends JGEngine
 			Document doc = dBuilder.parse(dataFile);
 			doc.getDocumentElement().normalize();
 
-			System.out.println("root of xml file " + doc.getDocumentElement().getNodeName());
 			NodeList nodes = doc.getElementsByTagName("fixed");
-			System.out.println("==========================");
 			
 			for (int i = 0; i < nodes.getLength(); i++) {
 				Node node = nodes.item(i);
@@ -84,11 +83,33 @@ public class Springies extends JGEngine
 					String ypos=getValue("ypos", element);
 					createFixed(id, xpos, ypos);
 					
-					System.out.println("ID: " + getValue("id", element));
-					System.out.println("X Position: " + getValue("xpos", element));
-					System.out.println("Y Position: " + getValue("ypos", element));
+					System.out.println("ID: " + id);
+					System.out.println("X Position: " + xpos);
+					System.out.println("Y Position: " + ypos);
 					
 				}
+			}
+			
+			nodes=doc.getElementsByTagName("mass");
+			for(int i=0; i <nodes.getLength(); i++){
+				Node node=nodes.item(i);
+				if(node.getNodeType()==Node.ELEMENT_NODE){
+					Element element = (Element) node;
+					String id=getValue("id", element);
+					String xpos=getValue("xpos", element);
+					String ypos=getValue("ypos", element);
+					String xVeloc=getValue("xVeloc", element);
+					String yVeloc=getValue("yVeloc", element);
+					String mass=getValue("massVal", element);
+					createMass(id, xpos, ypos, xVeloc, yVeloc, mass);
+					
+					System.out.println("ID: " + id);
+					System.out.println("X Position: " + xpos);
+					System.out.println("Y Position: " + ypos);
+					System.out.println("X Velocity: "+ xVeloc);
+					System.out.println("Y Velocity: "+ yVeloc);
+				}
+				
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -99,11 +120,20 @@ public class Springies extends JGEngine
 		Node node = (Node) nodes.item(0);
 		return node.getNodeValue();
 	}
+
+	
+	public void createMass(String id, String xpos, String ypos, String xveloc, String yveloc, String mass){
+		double xPosition=Double.parseDouble(xpos);
+		double yPosition=Double.parseDouble(ypos);
+		double xVelocity=Double.parseDouble(xveloc);
+		double yVelocity=Double.parseDouble(yveloc);
+		double massValue=Double.parseDouble(mass);
+		new Mass(id, xPosition*displayWidth(), yPosition*displayHeight(), xVelocity, yVelocity, massValue);
+	}
 	public void createFixed(String id, String xpos, String ypos){
 		double xPosition=Double.parseDouble(xpos);
 		double yPosition=Double.parseDouble(ypos);
-		PhysicalObject myFixedMass = new FixedMass(id, xPosition*displayWidth(), yPosition*displayHeight());
-		myFixedMass.setPos(100,100);
+		new FixedMass(id, xPosition*displayWidth(), yPosition*displayHeight());
 	
 	}
 	

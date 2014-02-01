@@ -11,6 +11,14 @@
 		<xpos>.75</xpos>
 		<ypos>.25</ypos>
 	</fixed>
+	<mass>
+		<id>Mass1</id>
+		<xpos>.6</xpos>
+		<ypos>.6</ypos>
+		<xVeloc>1</xVeloc>
+		<yVeloc>1</yVeloc>
+		<massVal>2</massVal>
+	</mass>
 </fixedMasses>
 
 

@@ -16,6 +16,6 @@ public class FixedMass extends PhysicalObjectCircle {
 	private static final double DEFAULT_RADIUS = 10;
 	public FixedMass(String id, double x, double y){
 		super(id, 1, JGColor.red, DEFAULT_RADIUS, DEFAULT_MASS);
-		this.setPos(100, 100);
+		this.setPos(x, y);
 	}
 }
