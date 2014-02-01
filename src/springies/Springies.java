@@ -10,6 +10,7 @@ import jboxGlue.Mass;
 import jboxGlue.PhysicalObject;
 import jboxGlue.PhysicalObjectCircle;
 import jboxGlue.PhysicalObjectRect;
+import jboxGlue.Spring;
 import jboxGlue.WorldManager;
 import jgame.JGColor;
 import jgame.JGObject;
@@ -24,7 +25,7 @@ import org.w3c.dom.NodeList;
 
 
 public class Springies extends JGEngine{
-	public static double viscosity = 30;
+	public static double viscosity = 5;
 	private static final String DEFAULT_VELOCITY="0";
 	private static final String DEFAULT_MASS="1";
     public Springies (){
