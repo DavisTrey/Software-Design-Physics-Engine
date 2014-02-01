@@ -28,6 +28,7 @@ public class Springies extends JGEngine{
 	public static double viscosity = 5;
 	private static final String DEFAULT_VELOCITY="0";
 	private static final String DEFAULT_MASS="1";
+	public static final String DEFAULT_SPRINGCONSTANT="1";
     public Springies (){
 
         // set the window size
@@ -60,9 +61,9 @@ public class Springies extends JGEngine{
         WorldManager.initWorld(this);
         WorldManager.getWorld().setGravity(new Vec2(0.0f, 0.1f));
         addWalls();
-        readData();
+        readXMLData();
     }
-    public void readData(){
+    public void readXMLData(){
 		try {
 
 			File dataFile = new File("src/springies/XML.xml");
@@ -125,7 +126,30 @@ public class Springies extends JGEngine{
 					System.out.println("Y Velocity: "+ yVeloc);
 					System.out.println("Mass: " + mass);
 				}
+			}
+			//Reading Springs
+			nodes=doc.getElementsByTagName("spring");
+			for(int i=0; i <nodes.getLength(); i++){
+				Node node=nodes.item(i);
+				if(node.getNodeType()==Node.ELEMENT_NODE){
+					Element element = (Element) node;
 				
+					String id1=getValue("id1", element);
+					String id2=getValue("id2", element);
+					String restLength=getValue("rest", element);
+					String springConstant=null;
+					if(element.hasAttribute("K")){
+						springConstant=getValue("K", element);
+					}
+					else{
+						springConstant=DEFAULT_SPRINGCONSTANT;
+					}
+					
+					System.out.println("id1: " + id1);
+					System.out.println("id2: " + id2);
+					System.out.println("Rest Length: " + restLength);
+					System.out.println("K: " + springConstant);
+				}
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -137,7 +161,11 @@ public class Springies extends JGEngine{
 		return node.getNodeValue();
 	}
 
-	
+	public void createSpring(String id1, String id2, String rest, String K){
+		double restLength=Double.parseDouble(rest);
+		double springConstant=Double.parseDouble(K);
+		
+	}
 	public void createMass(String id, String xpos, String ypos, String xveloc, String yveloc, String mass){
 		double xPosition=Double.parseDouble(xpos);
 		double yPosition=Double.parseDouble(ypos);
@@ -206,6 +234,7 @@ public class Springies extends JGEngine{
     public void doFrame ()
     {
         // update game objects
+    	//Viscosity Forces
     	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
     		b.applyForce(new Vec2((float)viscosity*-1*b.getLinearVelocity().x, (float)viscosity*-1*b.getLinearVelocity().y), b.m_xf.position);
     	}
