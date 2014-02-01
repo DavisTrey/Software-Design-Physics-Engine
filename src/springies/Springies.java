@@ -1,5 +1,11 @@
 package springies;
 
+import java.io.File;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import jboxGlue.FixedMass;
 import jboxGlue.PhysicalObject;
 import jboxGlue.PhysicalObjectCircle;
 import jboxGlue.PhysicalObjectRect;
@@ -7,7 +13,12 @@ import jboxGlue.WorldManager;
 import jgame.JGColor;
 import jgame.JGObject;
 import jgame.platform.JGEngine;
+
 import org.jbox2d.common.Vec2;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 @SuppressWarnings("serial")
@@ -45,10 +56,57 @@ public class Springies extends JGEngine
         // so set all directions (e.g., forces, velocities) in world coords
         WorldManager.initWorld(this);
         WorldManager.getWorld().setGravity(new Vec2(0.0f, 0.1f));
+        
         addBall();
         addWalls();
+        readData();
     }
+    public void readData(){
+		try {
 
+			File dataFile = new File("src/springies/XML.xml");
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(dataFile);
+			doc.getDocumentElement().normalize();
+
+			System.out.println("root of xml file " + doc.getDocumentElement().getNodeName());
+			NodeList nodes = doc.getElementsByTagName("fixed");
+			System.out.println("==========================");
+			
+			for (int i = 0; i < nodes.getLength(); i++) {
+				Node node = nodes.item(i);
+
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					Element element = (Element) node;
+					String id=getValue("id", element);
+					String xpos=getValue("xpos", element);
+					String ypos=getValue("ypos", element);
+					createFixed(id, xpos, ypos);
+					
+					System.out.println("ID: " + getValue("id", element));
+					System.out.println("X Position: " + getValue("xpos", element));
+					System.out.println("Y Position: " + getValue("ypos", element));
+					
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	private String getValue(String tag, Element element) {
+		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
+		Node node = (Node) nodes.item(0);
+		return node.getNodeValue();
+	}
+	public void createFixed(String id, String xpos, String ypos){
+		double xPosition=Double.parseDouble(xpos);
+		double yPosition=Double.parseDouble(ypos);
+		PhysicalObject myFixedMass = new FixedMass(id, xPosition*displayWidth(), yPosition*displayHeight());
+		myFixedMass.setPos(100,100);
+	
+	}
+	
     public void addBall ()
     {
         // add a bouncy ball

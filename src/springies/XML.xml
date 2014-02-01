@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fixedMasses>
+	<fixed>
+		<id>FixedMass1</id>
+		<xpos>.5</xpos>
+		<ypos>.5</ypos>
+	</fixed>
+	<fixed>
+		<id>FixedMass2</id>
+		<xpos>.75</xpos>
+		<ypos>.25</ypos>
+	</fixed>
+</fixedMasses>
+
+
