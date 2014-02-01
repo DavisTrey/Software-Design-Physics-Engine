@@ -57,8 +57,6 @@ public class Springies extends JGEngine
         // so set all directions (e.g., forces, velocities) in world coords
         WorldManager.initWorld(this);
         WorldManager.getWorld().setGravity(new Vec2(0.0f, 0.1f));
-        
-        addBall();
         addWalls();
         readData();
     }
@@ -192,7 +190,7 @@ public class Springies extends JGEngine
         // update game objects
         WorldManager.getWorld().step(1f, 1);
         moveObjects();
-        checkCollision(1 + 2, 1);
+        //checkCollision(1 + 2, 1);
     }
 
     @Override
