@@ -16,17 +16,19 @@ import jgame.JGObject;
 import jgame.platform.JGEngine;
 
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-@SuppressWarnings("serial")
 public class Springies extends JGEngine{
+	public static double viscosity = 30;
 	private static final String DEFAULT_VELOCITY="0";
 	private static final String DEFAULT_MASS="1";
     public Springies (){
+
         // set the window size
         int height = 480;
         double aspect = 16.0 / 9.0;
@@ -56,8 +58,6 @@ public class Springies extends JGEngine{
         // so set all directions (e.g., forces, velocities) in world coords
         WorldManager.initWorld(this);
         WorldManager.getWorld().setGravity(new Vec2(0.0f, 0.1f));
-        
-        addBall();
         addWalls();
         readData();
     }
@@ -205,9 +205,12 @@ public class Springies extends JGEngine{
     public void doFrame ()
     {
         // update game objects
+    	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
+    		b.applyForce(new Vec2((float)viscosity*-1*b.getLinearVelocity().x, (float)viscosity*-1*b.getLinearVelocity().y), b.m_xf.position);
+    	}
         WorldManager.getWorld().step(1f, 1);
         moveObjects();
-        checkCollision(1 + 2, 1);
+        //checkCollision(1 + 2, 1);
     }
 
     @Override
