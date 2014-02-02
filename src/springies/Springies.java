@@ -137,32 +137,48 @@ public class Springies extends JGEngine{
 					System.out.println("Mass: " + mass);
 				}
 			}
-			//Reading Springs
-			nodes=doc.getElementsByTagName("spring");
-			for(int i=0; i <nodes.getLength(); i++){
-				Node node=nodes.item(i);
-				if(node.getNodeType()==Node.ELEMENT_NODE){
-					Element element = (Element) node;
-				
-					String id1=getValue("id1", element);
-					String id2=getValue("id2", element);
-					String restLength=getValue("rest", element);
-					String springConstant=null;
-					try{
-						springConstant=getValue("constant", element);
-					}
-					catch(Exception ex){
-						springConstant=DEFAULT_SPRINGCONSTANT;
-					}
+			//Reading Springs and muscles
+			String[] array={"spring", "muscle"};
+			for(String s: array){
+				nodes=doc.getElementsByTagName(s);
+				for(int i=0; i <nodes.getLength(); i++){
+					Node node=nodes.item(i);
+					if(node.getNodeType()==Node.ELEMENT_NODE){
+						Element element = (Element) node;
 					
-					
-					createSpring(id1, id2, restLength, springConstant);
-					System.out.println("id1: " + id1);
-					System.out.println("id2: " + id2);
-					System.out.println("Rest Length: " + restLength);
-					System.out.println("K: " + springConstant);
-				}
+						String id1=getValue("id1", element);
+						String id2=getValue("id2", element);
+						String restLength=getValue("rest", element);
+						String springConstant=null;
+						String amplitude=null;
+						try{
+							springConstant=getValue("constant", element);
+						}
+						catch(Exception ex){
+							springConstant=DEFAULT_SPRINGCONSTANT;
+						}
+						try{
+							amplitude=getValue("amp", element);
+						}
+						catch(Exception ex){
+						}
+						if(amplitude!=null){
+							createMuscle(id1, id2, restLength, springConstant, amplitude);
+						}
+						else{
+							createSpring(id1, id2, restLength, springConstant);
+						}
+						
+						System.out.println("id1: " + id1);
+						System.out.println("id2: " + id2);
+						System.out.println("Rest Length: " + restLength);
+						System.out.println("K: " + springConstant);
+					}
 			}
+			}
+				
+			
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -172,7 +188,12 @@ public class Springies extends JGEngine{
 		Node node = (Node) nodes.item(0);
 		return node.getNodeValue();
 	}
-
+	public void createMuscle(String id1, String id2, String rest, String K, String amp){
+		double restLength=Double.parseDouble(rest);
+		double springConstant=Double.parseDouble(K);
+		double amplitude=Double.parseDouble(amp);
+		new Muscle(id1, id2, restLength, springConstant, amplitude);
+	}
 	public void createSpring(String id1, String id2, String rest, String K){
 		double restLength=Double.parseDouble(rest);
 		double springConstant=Double.parseDouble(K);
@@ -222,8 +243,8 @@ public class Springies extends JGEngine{
         // update game objects
     	Vec2 center = findCenterOfMass();
     	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
-    		applyViscosity(b);
-    	   applyWallForce(b);
+    		//applyViscosity(b);
+    	  // applyWallForce(b);
     	   //applyCenterOfMassForce(b, center);
     	}
         WorldManager.getWorld().step(1f, 1);

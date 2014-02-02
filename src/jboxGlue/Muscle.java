@@ -15,8 +15,8 @@ public class Muscle extends Spring{
 	}
 	
 	public void incrementMuscle(){
-		myTime++;
-		restLength = myLength*myAmplitude*Math.sin(myTime);
+		myTime+=.1;
+		restLength = myLength*myAmplitude*Math.sin(myTime*2*3.14);
 	}
 
 }
