@@ -276,9 +276,9 @@ public class Springies extends JGEngine{
     		inity+=(b.m_xf.position.y)*(b.getMass());
     		totalmass+=b.getMass();
     	}
-    	System.out.println(initx/totalmass);
-    	System.out.println(inity/totalmass);
-    	System.out.println("");
+    	//System.out.println(initx/totalmass);
+    	//System.out.println(inity/totalmass);
+    	//System.out.println("");
     	return new Vec2((float)(initx/totalmass),(float)(inity/totalmass));
 	}
 

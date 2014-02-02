@@ -18,16 +18,9 @@
 		<massVal>2</massVal>
 	</mass>
 	<spring>
-		<constant>.5</constant>
-		<id1>FixedMass1</id1>
-		<id2>FixedMass2</id2>
-		<rest>50</rest>
-	</spring>
-	<spring>
-		<id1>FixedMass1</id1>
+		<id1>FixedMass2</id1>
 		<id2>Mass2</id2>
-		<rest>10</rest>
-		<constant>100</constant>
+		<rest>30</rest>
 	</spring>
 </fixedMasses>
 

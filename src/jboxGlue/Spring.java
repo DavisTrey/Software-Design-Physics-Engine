@@ -30,6 +30,7 @@ public class Spring extends JGObject{
         		myMass2.getBody().getPosition().x, myMass2.getBody().getPosition().y);;
     }
     public void applyForce(){
+    	/*
     	double currentLength=Math.pow(Math.pow(myMass1.x-myMass2.x, 2)+Math.pow(myMass1.y-myMass2.y, 2), .5);
     	double displacement=currentLength-restLength;
     	double Force=springConstant*displacement;
@@ -50,6 +51,7 @@ public class Spring extends JGObject{
     		myMass1.getBody().applyForce(vector.negateLocal(), myMass1.getBody().m_xf.position);
     		myMass2.getBody().applyForce(vector, myMass2.getBody().m_xf.position);
     	}
+    	*/
     }
 }
 
