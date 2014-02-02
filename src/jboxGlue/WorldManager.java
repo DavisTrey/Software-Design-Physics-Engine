@@ -1,6 +1,7 @@
 package jboxGlue;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import jgame.platform.JGEngine;
 
@@ -13,7 +14,8 @@ import org.jbox2d.dynamics.World;
 public class WorldManager
 {
     public static World ourWorld;
-    public static HashMap<String, Body> myBodies = new HashMap<String, Body>();
+    private static HashMap<String, Body> myBodies = new HashMap<String, Body>();
+    private static HashSet<Spring> mySprings=new HashSet<Spring>();
     static {
         ourWorld = null;
     }
@@ -41,5 +43,11 @@ public class WorldManager
     
     public static void addBody(String id, Body body){
     	myBodies.put(id, body);
+    }
+    public static HashSet<Spring> getSprings(){
+    	return mySprings;
+    }
+    public static void addSpring(Spring s){
+    	mySprings.add(s);
     }
 }

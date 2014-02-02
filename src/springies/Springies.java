@@ -1,6 +1,7 @@
 package springies;
 
 import java.io.File;
+import java.util.HashSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -252,7 +253,12 @@ public class Springies extends JGEngine{
         moveObjects();
         checkCollision(1 + 2, 1);
     }
-
+    private void applySpringForce(){
+    	HashSet<Spring> springs=WorldManager.getSprings();
+    	for(Spring s: springs){
+    		s.applyForce();
+    	}
+    }
 	private void applyWallForce(Body b) {
 		b.applyForce(new Vec2((float)0,(float)(((-1)*WALL_FORCE_CONSTANT)/(Math.pow(Math.abs(b.m_xf.position.y-walls[0].y),wallForces[0])))), b.m_xf.position);
 		b.applyForce(new Vec2((float)(((-1)*WALL_FORCE_CONSTANT)/(Math.pow(Math.abs(b.m_xf.position.y-walls[1].x),wallForces[1]))), (float)0), b.m_xf.position);

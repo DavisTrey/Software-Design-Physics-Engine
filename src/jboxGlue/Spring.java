@@ -11,11 +11,16 @@ public class Spring extends JGObject{
     protected JGEngineInterface myEngine;
 	public PhysicalObjectCircle myMass1;
 	public PhysicalObjectCircle myMass2;
+	private static double restLength;
+	private static double springConstant;
 	public Spring(String massid1, String massid2, double length, double springiness){
 		super("spring", true, 0, 0 ,0, null);
+		restLength=length;
+		springConstant=springiness;
 		myMass1 = (PhysicalObjectCircle) WorldManager.getBodies().get(massid1).getUserData();
 		myMass2 = (PhysicalObjectCircle) WorldManager.getBodies().get(massid2).getUserData();
 		myEngine = eng;
+		WorldManager.addSpring(this);
 	}
     public void paint()
     {
@@ -23,4 +28,13 @@ public class Spring extends JGObject{
         myEngine.drawLine(myMass1.getBody().getPosition().x, myMass1.getBody().getPosition().y,
         		myMass2.getBody().getPosition().x, myMass2.getBody().getPosition().y);;
     }
+    public void applyForce(){
+    	double currentLength=Math.pow(Math.pow(myMass1.x-myMass2.x, 2)+Math.pow(myMass1.y-myMass2.y, 2), .5);
+    	double displacement=currentLength-restLength;
+    	double Force=springConstant*displacement;
+    	if(Force>0){
+    		
+    	}
+    }
 }
+
