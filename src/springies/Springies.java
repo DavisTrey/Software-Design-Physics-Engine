@@ -278,7 +278,6 @@ public class Springies extends JGEngine{
     	}
     	System.out.println(initx/totalmass);
     	System.out.println(inity/totalmass);
-    	System.out.println("");
     	return new Vec2((float)(initx/totalmass),(float)(inity/totalmass));
 	}
 

@@ -1,5 +1,4 @@
 package jboxGlue;
-import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
 import jgame.JGColor;
@@ -33,22 +32,8 @@ public class Spring extends JGObject{
     	double currentLength=Math.pow(Math.pow(myMass1.x-myMass2.x, 2)+Math.pow(myMass1.y-myMass2.y, 2), .5);
     	double displacement=currentLength-restLength;
     	double Force=springConstant*displacement;
-    	double xVector=myMass1.x-myMass2.x;
-		double yVector=myMass1.y-myMass2.y;
-		double magnitude=Math.pow(Math.pow(xVector, 2)+Math.pow(yVector, 2), .5);
-		double normalizedX=xVector/magnitude;
-		double normalizedY=yVector/magnitude;
-		Vec2 vector=new Vec2((float)(normalizedX*Math.abs(Force)), (float)(normalizedY*Math.abs(Force)));
-		
-    	if(Force<0){
-    		//Pushing out
-    		myMass1.getBody().applyForce(vector, myMass1.getBody().m_xf.position);
-    		myMass2.getBody().applyForce(vector.negateLocal(), myMass2.getBody().m_xf.position);		
-    	}
-    	else if(Force>0){
-    		//Pulling in
-    		myMass1.getBody().applyForce(vector.negateLocal(), myMass1.getBody().m_xf.position);
-    		myMass2.getBody().applyForce(vector, myMass2.getBody().m_xf.position);
+    	if(Force>0){
+    		
     	}
     }
 }
