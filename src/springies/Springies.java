@@ -34,7 +34,7 @@ public class Springies extends JGEngine{
 	public static final String DEFAULT_SPRINGCONSTANT="1";
 	private static final double WALL_FORCE_CONSTANT = 100000;
 	private static final double CENTEROFMASS_FORCE_CONSTANT = 50000;
-	private static double centerOfMassExponent = -2;
+	private static double centerOfMassExponent = 2;
 	public static double[] wallForces = {2,2,2,2};
 	public static PhysicalObject[] walls = new PhysicalObject[4];
     public Springies (){
@@ -276,9 +276,9 @@ public class Springies extends JGEngine{
     		inity+=(b.m_xf.position.y)*(b.getMass());
     		totalmass+=b.getMass();
     	}
-    	//System.out.println(initx/totalmass);
-    	//System.out.println(inity/totalmass);
-    	//System.out.println("");
+    	System.out.println(initx/totalmass);
+    	System.out.println(inity/totalmass);
+    	System.out.println("");
     	return new Vec2((float)(initx/totalmass),(float)(inity/totalmass));
 	}
 
