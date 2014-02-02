@@ -224,9 +224,10 @@ public class Springies extends JGEngine{
     	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
     		applyViscosity(b);
     	    applyWallForce(b);
-    	    applyCenterOfMassForce(b, center);
+    	   applyCenterOfMassForce(b, center);
     	}
         WorldManager.getWorld().step(1f, 1);
+    	applySpringForce();
         moveObjects();
         checkCollision(2, 1);
     }
