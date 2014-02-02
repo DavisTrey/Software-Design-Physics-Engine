@@ -30,13 +30,12 @@ public class Spring extends JGObject{
 	}
 	public void applyForce(){
 
-		double currentLength=Math.pow(Math.pow(myMass1.x-myMass2.x, 2)+Math.pow(myMass1.y-myMass2.y, 2), .5);
-		double displacement=currentLength-restLength;
-		double Force=springConstant*displacement;
 		double xVector=myMass1.getBody().m_xf.position.x-myMass2.getBody().m_xf.position.x;
 		double yVector=myMass1.getBody().m_xf.position.y-myMass2.getBody().m_xf.position.y;
-		
 		double magnitude=Math.pow(Math.pow(xVector, 2)+Math.pow(yVector, 2), .5);
+		double displacement=magnitude-restLength;
+		double Force=springConstant*displacement;
+		
 		double normalizedX=xVector/magnitude;
 		double normalizedY=yVector/magnitude;
 		Vec2 vector=new Vec2((float)(normalizedX*Math.abs(Force)), (float)(normalizedY*Math.abs(Force)));
