@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import jboxGlue.FixedMass;
 import jboxGlue.Mass;
+import jboxGlue.Muscle;
 import jboxGlue.PhysicalObject;
 import jboxGlue.PhysicalObjectCircle;
 import jboxGlue.PhysicalObjectRect;
@@ -256,6 +257,8 @@ public class Springies extends JGEngine{
     private void applySpringForce(){
     	HashSet<Spring> springs=WorldManager.getSprings();
     	for(Spring s: springs){
+    		if(s instanceof Muscle)
+    			((Muscle) s).incrementMuscle();
     		s.applyForce();
     	}
     }

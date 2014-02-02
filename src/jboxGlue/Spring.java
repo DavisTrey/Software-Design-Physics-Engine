@@ -9,10 +9,10 @@ import jgame.impl.JGEngineInterface;
 // because it won't interact with the physics engine directly.
 public class Spring extends JGObject{
     protected JGEngineInterface myEngine;
-	public PhysicalObjectCircle myMass1;
-	public PhysicalObjectCircle myMass2;
-	private static double restLength;
-	private static double springConstant;
+	private PhysicalObjectCircle myMass1;
+	private PhysicalObjectCircle myMass2;
+	protected double restLength;
+	private double springConstant;
 	public Spring(String massid1, String massid2, double length, double springiness){
 		super("spring", true, 0, 0 ,0, null);
 		restLength=length;
