@@ -20,7 +20,8 @@
 	<spring>
 		<id1>FixedMass2</id1>
 		<id2>Mass2</id2>
-		<rest>10</rest>
+		<rest>500</rest>
+		<constant>2</constant>
 	</spring>
 </fixedMasses>
 

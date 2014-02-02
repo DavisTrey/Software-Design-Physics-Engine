@@ -223,8 +223,8 @@ public class Springies extends JGEngine{
     	Vec2 center = findCenterOfMass();
     	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
     		applyViscosity(b);
-    	    applyWallForce(b);
-    	   applyCenterOfMassForce(b, center);
+    	   applyWallForce(b);
+    	   //applyCenterOfMassForce(b, center);
     	}
         WorldManager.getWorld().step(1f, 1);
     	applySpringForce();
