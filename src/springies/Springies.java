@@ -33,8 +33,8 @@ public class Springies extends JGEngine{
 	private static final String DEFAULT_MASS="1";
 	public static final String DEFAULT_SPRINGCONSTANT="1";
 	private static final double WALL_FORCE_CONSTANT = 100000;
-	private static final double CENTEROFMASS_FORCE_CONSTANT = 5;
-	private static double centerOfMassExponent = 2;
+	private static final double CENTEROFMASS_FORCE_CONSTANT = 50000;
+	private static double centerOfMassExponent = -2;
 	public static double[] wallForces = {2,2,2,2};
 	public static PhysicalObject[] walls = new PhysicalObject[4];
     public Springies (){
@@ -232,7 +232,19 @@ public class Springies extends JGEngine{
     }
 
 	private void applyCenterOfMassForce(Body b, Vec2 centerOfMass) {
-		
+		double xComp = centerOfMass.x - b.m_xf.position.x;
+		double yComp = centerOfMass.y - b.m_xf.position.y;
+		double distance = Math.sqrt(Math.pow(xComp, 2)+Math.pow(yComp, 2));
+		xComp = xComp/distance;
+		yComp = yComp/distance;
+		double magnitude = CENTEROFMASS_FORCE_CONSTANT/Math.pow(distance, Math.abs(centerOfMassExponent));
+		Vec2 comForce = new Vec2((float)(magnitude*xComp),(float)(magnitude*yComp));
+		if(centerOfMassExponent<0){
+			b.applyForce(comForce.negate(), b.m_xf.position);
+		}
+		else{
+			b.applyForce(comForce, b.m_xf.position);
+		}
 	}
 
 	private void applySpringForce(){
@@ -260,9 +272,12 @@ public class Springies extends JGEngine{
     	double totalmass = 0;
     	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
     		initx+=(b.m_xf.position.x)*(b.getMass());
-    		initx+=(b.m_xf.position.y)*(b.getMass());
+    		inity+=(b.m_xf.position.y)*(b.getMass());
     		totalmass+=b.getMass();
     	}
+    	System.out.println(initx/totalmass);
+    	System.out.println(inity/totalmass);
+    	System.out.println("");
     	return new Vec2((float)(initx/totalmass),(float)(inity/totalmass));
 	}
 
