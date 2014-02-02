@@ -20,9 +20,9 @@
 	<muscle>
 		<id1>FixedMass1</id1>
 		<id2>Mass2</id2>
-		<rest>100</rest>
-		<constant>2</constant>
-		<amp>20</amp>
+		<rest>200</rest>
+		<constant>3</constant>
+		<amp>100</amp>
 	</muscle>
 </fixedMasses>
 

@@ -67,7 +67,7 @@ public class Springies extends JGEngine{
         // so gravity is up in world coords and down in game coords
         // so set all directions (e.g., forces, velocities) in world coords
         WorldManager.initWorld(this);
-        WorldManager.getWorld().setGravity(new Vec2(0.0f, 0.1f));
+        WorldManager.getWorld().setGravity(new Vec2(0.0f, 0.0f));
         addWalls();
         readXMLData();
         
@@ -243,9 +243,9 @@ public class Springies extends JGEngine{
         // update game objects
     	Vec2 center = findCenterOfMass();
     	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
-    		//applyViscosity(b);
-    	  // applyWallForce(b);
-    	   //applyCenterOfMassForce(b, center);
+    	   applyViscosity(b);
+    	   applyWallForce(b);
+    	   applyCenterOfMassForce(b, center);
     	}
         WorldManager.getWorld().step(1f, 1);
     	applySpringForce();
