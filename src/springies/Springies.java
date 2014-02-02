@@ -20,6 +20,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -65,6 +66,7 @@ public class Springies extends JGEngine{
         WorldManager.getWorld().setGravity(new Vec2(0.0f, 0.1f));
         addWalls();
         readXMLData();
+        
     }
     public void readXMLData(){
 		try {
@@ -106,20 +108,21 @@ public class Springies extends JGEngine{
 					String xVeloc=null;
 					String yVeloc=null;
 					String mass=null;
-					if(element.hasAttribute("xVeloc")){
+					try{
 						xVeloc=getValue("xVeloc", element);
 						yVeloc=getValue("yVeloc", element);
 					}
-					else{
+					catch(Exception ex){
 						xVeloc=DEFAULT_VELOCITY;
 						yVeloc=DEFAULT_VELOCITY;
 					}
-					if(element.hasAttribute("massVal")){
+					try{
 						mass=getValue("massVal", element);
 					}
-					else{
+					catch(Exception ex){
 						mass=DEFAULT_MASS;
 					}
+					
 					createMass(id, xpos, ypos, xVeloc, yVeloc, mass);
 					
 					System.out.println("ID: " + id);
@@ -141,13 +144,15 @@ public class Springies extends JGEngine{
 					String id2=getValue("id2", element);
 					String restLength=getValue("rest", element);
 					String springConstant=null;
-					if(element.hasAttribute("K")){
-						springConstant=getValue("K", element);
+					try{
+						springConstant=getValue("constant", element);
 					}
-					else{
+					catch(Exception ex){
 						springConstant=DEFAULT_SPRINGCONSTANT;
 					}
 					
+					
+					createSpring(id1, id2, restLength, springConstant);
 					System.out.println("id1: " + id1);
 					System.out.println("id2: " + id2);
 					System.out.println("Rest Length: " + restLength);
@@ -167,6 +172,7 @@ public class Springies extends JGEngine{
 	public void createSpring(String id1, String id2, String rest, String K){
 		double restLength=Double.parseDouble(rest);
 		double springConstant=Double.parseDouble(K);
+		new Spring(id1, id2, restLength, springConstant);
 		
 	}
 	public void createMass(String id, String xpos, String ypos, String xveloc, String yveloc, String mass){
