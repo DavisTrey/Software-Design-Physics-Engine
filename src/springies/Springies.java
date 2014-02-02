@@ -32,7 +32,7 @@ public class Springies extends JGEngine{
 	private static final String DEFAULT_VELOCITY="0";
 	private static final String DEFAULT_MASS="1";
 	public static final String DEFAULT_SPRINGCONSTANT="1";
-	private static final double WALL_FORCE_CONSTANT = 200000;
+	private static final double WALL_FORCE_CONSTANT = 100000;
 	private static final double CENTEROFMASS_FORCE_CONSTANT = 5;
 	private static double centerOfMassExponent = 2;
 	public static double[] wallForces = {2,2,2,2};
@@ -194,33 +194,6 @@ public class Springies extends JGEngine{
 	
 	}
 	
-    public void addBall ()
-    {
-        // add a bouncy ball
-        // NOTE: you could make this into a separate class, but I'm lazy
-        PhysicalObject ball = new PhysicalObjectCircle("ball", 1, JGColor.blue, 10, 5) {
-            @Override
-            public void hit (JGObject other)
-            {
-                // we hit something! bounce off it!
-                Vec2 velocity = myBody.getLinearVelocity();
-                // is it a tall wall?
-                final double DAMPING_FACTOR = 0.8;
-                boolean isSide = other.getBBox().height > other.getBBox().width;
-                if (isSide) {
-                    velocity.x *= -DAMPING_FACTOR;
-                }
-                else {
-                    velocity.y *= -DAMPING_FACTOR;
-                }
-                // apply the change
-                myBody.setLinearVelocity(velocity);
-            }
-        };
-        ball.setPos(displayWidth() / 2, displayHeight() / 2);
-        ball.setForce(8000, -10000);
-    }
-
     private void addWalls ()
     {
         // add walls to bounce off of
@@ -255,7 +228,7 @@ public class Springies extends JGEngine{
     	}
         WorldManager.getWorld().step(1f, 1);
         moveObjects();
-        checkCollision(1 + 2, 1);
+        checkCollision(2, 1);
     }
 
 	private void applyCenterOfMassForce(Body b, Vec2 centerOfMass) {
