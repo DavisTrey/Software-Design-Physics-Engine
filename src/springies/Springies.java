@@ -29,6 +29,9 @@ public class Springies extends JGEngine{
 	private static final String DEFAULT_VELOCITY="0";
 	private static final String DEFAULT_MASS="1";
 	public static final String DEFAULT_SPRINGCONSTANT="1";
+	private static final double WALL_FORCE_CONSTANT = 100;
+	public static int[] wallForces = {2,2,2,2};
+	public static PhysicalObject[] walls = new PhysicalObject[4];
     public Springies (){
 
         // set the window size
@@ -216,18 +219,18 @@ public class Springies extends JGEngine{
         final double WALL_THICKNESS = 10;
         final double WALL_WIDTH = displayWidth() - WALL_MARGIN * 2 + WALL_THICKNESS;
         final double WALL_HEIGHT = displayHeight() - WALL_MARGIN * 2 + WALL_THICKNESS;
-        PhysicalObject wall = new PhysicalObjectRect("wall", 2, JGColor.green,
+        walls[0] = new PhysicalObjectRect("wall", 2, JGColor.green,
                                                      WALL_WIDTH, WALL_THICKNESS);
-        wall.setPos(displayWidth() / 2, WALL_MARGIN);
-        wall = new PhysicalObjectRect("wall", 2, JGColor.green,
+        walls[0].setPos(displayWidth() / 2, WALL_MARGIN);
+        walls[2] = new PhysicalObjectRect("wall", 2, JGColor.green,
                                       WALL_WIDTH, WALL_THICKNESS);
-        wall.setPos(displayWidth() / 2, displayHeight() - WALL_MARGIN);
-        wall = new PhysicalObjectRect("wall", 2, JGColor.green,
+        walls[2].setPos(displayWidth() / 2, displayHeight() - WALL_MARGIN);
+        walls[3] = new PhysicalObjectRect("wall", 2, JGColor.green,
                                       WALL_THICKNESS, WALL_HEIGHT);
-        wall.setPos(WALL_MARGIN, displayHeight() / 2);
-        wall = new PhysicalObjectRect("wall", 2, JGColor.green,
+        walls[3].setPos(WALL_MARGIN, displayHeight() / 2);
+        walls[1] = new PhysicalObjectRect("wall", 2, JGColor.green,
                                       WALL_THICKNESS, WALL_HEIGHT);
-        wall.setPos(displayWidth() - WALL_MARGIN, displayHeight() / 2);
+        walls[1].setPos(displayWidth() - WALL_MARGIN, displayHeight() / 2);
     }
 
     @Override
@@ -236,12 +239,25 @@ public class Springies extends JGEngine{
         // update game objects
     	//Viscosity Forces
     	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
-    		b.applyForce(new Vec2((float)viscosity*-1*b.getLinearVelocity().x, (float)viscosity*-1*b.getLinearVelocity().y), b.m_xf.position);
+    		applyViscosity(b);
+    	    applyWallForce(b);
     	}
         WorldManager.getWorld().step(1f, 1);
         moveObjects();
-        //checkCollision(1 + 2, 1);
+        checkCollision(1 + 2, 1);
     }
+
+	private void applyWallForce(Body b) {
+		b.applyForce(new Vec2((float)0,(float)(((-1)*WALL_FORCE_CONSTANT)/(Math.pow(Math.abs(b.m_xf.position.y-walls[0].y),wallForces[0])))), b.m_xf.position);
+		b.applyForce(new Vec2((float)(((-1)*WALL_FORCE_CONSTANT)/(Math.pow(Math.abs(b.m_xf.position.y-walls[1].x),wallForces[1]))), (float)0), b.m_xf.position);
+		b.applyForce(new Vec2((float)0,(float)(WALL_FORCE_CONSTANT/(Math.pow(Math.abs(b.m_xf.position.y-walls[2].y),wallForces[2])))), b.m_xf.position);
+		b.applyForce(new Vec2((float)(WALL_FORCE_CONSTANT/(Math.pow(Math.abs(b.m_xf.position.y-walls[3].x),wallForces[3]))), (float)0), b.m_xf.position);
+	}
+
+	private void applyViscosity(Body b) {
+		b.applyForce(new Vec2((float)viscosity*-1*b.getLinearVelocity().x,
+				(float)viscosity*-1*b.getLinearVelocity().y), b.m_xf.position);
+	}
 
     @Override
     public void paintFrame ()
