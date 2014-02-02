@@ -31,7 +31,7 @@ public class Springies extends JGEngine{
 	private static final String DEFAULT_VELOCITY="0";
 	private static final String DEFAULT_MASS="1";
 	public static final String DEFAULT_SPRINGCONSTANT="1";
-	private static final double WALL_FORCE_CONSTANT = 100;
+	private static final double WALL_FORCE_CONSTANT = 200000;
 	public static int[] wallForces = {2,2,2,2};
 	public static PhysicalObject[] walls = new PhysicalObject[4];
     public Springies (){
@@ -260,10 +260,10 @@ public class Springies extends JGEngine{
     	}
     }
 	private void applyWallForce(Body b) {
-		b.applyForce(new Vec2((float)0,(float)(((-1)*WALL_FORCE_CONSTANT)/(Math.pow(Math.abs(b.m_xf.position.y-walls[0].y),wallForces[0])))), b.m_xf.position);
-		b.applyForce(new Vec2((float)(((-1)*WALL_FORCE_CONSTANT)/(Math.pow(Math.abs(b.m_xf.position.y-walls[1].x),wallForces[1]))), (float)0), b.m_xf.position);
-		b.applyForce(new Vec2((float)0,(float)(WALL_FORCE_CONSTANT/(Math.pow(Math.abs(b.m_xf.position.y-walls[2].y),wallForces[2])))), b.m_xf.position);
-		b.applyForce(new Vec2((float)(WALL_FORCE_CONSTANT/(Math.pow(Math.abs(b.m_xf.position.y-walls[3].x),wallForces[3]))), (float)0), b.m_xf.position);
+		b.applyForce(new Vec2((float)0,(float)(WALL_FORCE_CONSTANT/(Math.pow(Math.abs(b.m_xf.position.y-walls[0].y),wallForces[0])))), b.m_xf.position);
+		b.applyForce(new Vec2((float)((-1)*WALL_FORCE_CONSTANT/(Math.pow(Math.abs(b.m_xf.position.x-walls[1].x),wallForces[1]))), (float)0), b.m_xf.position);
+		b.applyForce(new Vec2((float)0,(float)((-1)*WALL_FORCE_CONSTANT/(Math.pow(Math.abs(b.m_xf.position.y-walls[2].y),wallForces[2])))), b.m_xf.position);
+		b.applyForce(new Vec2((float)(WALL_FORCE_CONSTANT/(Math.pow(Math.abs(b.m_xf.position.x-walls[3].x),wallForces[3]))), (float)0), b.m_xf.position);
 	}
 
 	private void applyViscosity(Body b) {
