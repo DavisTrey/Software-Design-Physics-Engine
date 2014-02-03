@@ -3,6 +3,8 @@ package springies;
 import java.io.File;
 import java.util.HashSet;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -74,8 +76,15 @@ public class Springies extends JGEngine{
     }
     public void readXMLData(){
 		try {
-
-			File dataFile = new File("src/springies/XML.xml");
+			File dataFile = new File("");
+			JFileChooser chooser = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(
+			        "XML Files", "xml");
+			    chooser.setFileFilter(filter);
+			    int returnVal = chooser.showOpenDialog(getParent());
+			    if(returnVal == JFileChooser.APPROVE_OPTION) {
+					dataFile = chooser.getSelectedFile();
+			    }
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(dataFile);
@@ -93,9 +102,9 @@ public class Springies extends JGEngine{
 					String ypos=getValue("ypos", element);
 					createFixed(id, xpos, ypos);
 					
-					System.out.println("ID: " + id);
-					System.out.println("X Position: " + xpos);
-					System.out.println("Y Position: " + ypos);
+					//System.out.println("ID: " + id);
+					//System.out.println("X Position: " + xpos);
+					//System.out.println("Y Position: " + ypos);
 					
 				}
 			}
@@ -129,12 +138,12 @@ public class Springies extends JGEngine{
 					
 					createMass(id, xpos, ypos, xVeloc, yVeloc, mass);
 					
-					System.out.println("ID: " + id);
-					System.out.println("X Position: " + xpos);
-					System.out.println("Y Position: " + ypos);
-					System.out.println("X Velocity: "+ xVeloc);
-					System.out.println("Y Velocity: "+ yVeloc);
-					System.out.println("Mass: " + mass);
+					//System.out.println("ID: " + id);
+					//System.out.println("X Position: " + xpos);
+					//System.out.println("Y Position: " + ypos);
+					//System.out.println("X Velocity: "+ xVeloc);
+					//System.out.println("Y Velocity: "+ yVeloc);
+					//System.out.println("Mass: " + mass);
 				}
 			}
 			//Reading Springs
@@ -157,10 +166,10 @@ public class Springies extends JGEngine{
 					
 					
 					createSpring(id1, id2, restLength, springConstant);
-					System.out.println("id1: " + id1);
-					System.out.println("id2: " + id2);
-					System.out.println("Rest Length: " + restLength);
-					System.out.println("K: " + springConstant);
+					//System.out.println("id1: " + id1);
+					//System.out.println("id2: " + id2);
+					//System.out.println("Rest Length: " + restLength);
+					//System.out.println("K: " + springConstant);
 				}
 			}
 		} catch (Exception ex) {
@@ -276,9 +285,6 @@ public class Springies extends JGEngine{
     		inity+=(b.m_xf.position.y)*(b.getMass());
     		totalmass+=b.getMass();
     	}
-    	System.out.println(initx/totalmass);
-    	System.out.println(inity/totalmass);
-    	System.out.println("");
     	return new Vec2((float)(initx/totalmass),(float)(inity/totalmass));
 	}
 
