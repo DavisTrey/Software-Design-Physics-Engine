@@ -32,16 +32,17 @@ import org.w3c.dom.NodeList;
 
 
 public class Springies extends JGEngine{
-	public static double viscosity = 5;
-	private static final String DEFAULT_VELOCITY="0";
-	private static final String DEFAULT_MASS="1";
-	private static final String DEFAULT_REST="150";
-	public static final String DEFAULT_SPRINGCONSTANT="1";
+	private static double viscosity= 5;
+	protected static final String DEFAULT_VELOCITY="0";
+	protected static final String DEFAULT_MASS="1";
+	protected static final String DEFAULT_REST="150";
+	protected static final String DEFAULT_SPRINGCONSTANT="1";
 	private static double CENTEROFMASS_FORCE_CONSTANT = 2000;
 	private static double CENTEROFMASS_EXPONENT = 2;
-	public static double[] wallForceExponents = {2,2,2,2};
-	private static final double WALL_FORCE_CONSTANT[] = {100000, 100000, 100000, 100000};
-	public static PhysicalObject[] walls = new PhysicalObject[4];
+	private static double[] wallForceExponents = {2,2,2,2};
+	private static double WALL_FORCE_CONSTANT[] = {100000, 100000, 100000, 100000};
+	private static PhysicalObject[] walls = new PhysicalObject[4];
+	
     public Springies (){
 
         // set the window size
@@ -74,12 +75,10 @@ public class Springies extends JGEngine{
         WorldManager.initWorld(this);
         WorldManager.getWorld().setGravity(new Vec2(0.0f, 0.1f));
         addWalls();
-        readXMLData();
-        readEnvironmentData();
+        XMLMessage();
         
     }
-    
-    public void readXMLData(){
+    public void XMLMessage(){
 		try {
 			Frame message=new Frame();
 			JOptionPane.showMessageDialog(message, "Please load your object XML File");
@@ -93,6 +92,30 @@ public class Springies extends JGEngine{
 			    if(returnVal == JFileChooser.APPROVE_OPTION) {
 					dataFile = chooser.getSelectedFile();
 			    }
+			    
+			readXMLData(dataFile);
+
+			message=new Frame();
+			Object[] options={"Yes", "No"};
+			int n=JOptionPane.showOptionDialog(message, "Would you like to load an enviroment file?", "XML Loading", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+			if(n==0){
+				dataFile = new File("");
+				chooser = new JFileChooser();
+				filter = new FileNameExtensionFilter(
+				        "XML Files", "xml");
+				    chooser.setFileFilter(filter);
+				    returnVal = chooser.showOpenDialog(getParent());
+				    if(returnVal == JFileChooser.APPROVE_OPTION) {
+						dataFile = chooser.getSelectedFile();
+				    }
+				    readEnvironmentData(dataFile);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	public void readXMLData(File dataFile){
+		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(dataFile);
@@ -185,21 +208,8 @@ public class Springies extends JGEngine{
 			ex.printStackTrace();
 		}
 	}
-    public void readEnvironmentData(){
+    public void readEnvironmentData(File dataFile){
     	try {
-    		Frame message=new Frame();
-			Object[] options={"Yes", "No"};
-			int n=JOptionPane.showOptionDialog(message, "Would you like to load an enviroment file?", "XML Loading", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-			if(n==0){
-				File dataFile = new File("");
-				JFileChooser chooser = new JFileChooser();
-				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				        "XML Files", "xml");
-				    chooser.setFileFilter(filter);
-				    int returnVal = chooser.showOpenDialog(getParent());
-				    if(returnVal == JFileChooser.APPROVE_OPTION) {
-						dataFile = chooser.getSelectedFile();
-				    }
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 				Document doc = dBuilder.parse(dataFile);
@@ -213,9 +223,6 @@ public class Springies extends JGEngine{
 						Element element = (Element) node;
 						String direction=element.getAttribute("direction");
 						String magnitude=element.getAttribute("magnitude");
-						System.out.println("Gravity--------");
-						System.out.println("Direction:" + direction);
-						System.out.println("Mag:" + magnitude);
 						alterGravity(direction, magnitude);
 					}
 				}
@@ -226,8 +233,6 @@ public class Springies extends JGEngine{
 					if (node.getNodeType() == Node.ELEMENT_NODE) {
 						Element element = (Element) node;
 						String magnitude=element.getAttribute("magnitude");
-						System.out.println("Viscosity--------");
-						System.out.println("Mag:" + magnitude);
 						alterViscosity(magnitude);
 					}
 				}
@@ -240,9 +245,6 @@ public class Springies extends JGEngine{
 						Element element = (Element) node;
 						String magnitude=element.getAttribute("magnitude");
 						String exponent=element.getAttribute("exponent");
-						System.out.println("Center--------");
-						System.out.println("Mag:" + magnitude);
-						System.out.println("Exponent:" + exponent);
 						alterCenterMass(magnitude, exponent);
 					}
 				}
@@ -256,17 +258,9 @@ public class Springies extends JGEngine{
 						String id=element.getAttribute("id");
 						String magnitude=element.getAttribute("magnitude");
 						String exponent=element.getAttribute("exponent");
-						System.out.println("Wall--------");
-						System.out.println("Mag:" + magnitude);
-						System.out.println("Exponent:" + exponent);
-						System.out.println("Id: " + id);
 						alterWall(id, magnitude, exponent);
 					}
 				}
-			}
-			
-
-
     	} catch (Exception ex) {
     		ex.printStackTrace();
     	}
@@ -282,16 +276,17 @@ public class Springies extends JGEngine{
     }
     public void alterCenterMass(String magnitude, String exponent){
     	CENTEROFMASS_FORCE_CONSTANT=Double.parseDouble(magnitude);
-    	CENTEROFMASS_EXPONENT=Double.parseDouble(exponent);	
+		CENTEROFMASS_EXPONENT=Double.parseDouble(exponent);
     }
+    
     public void alterWall(String id, String magnitude, String exponent){
     	int wallIndex=(int)(Double.parseDouble(id)-1);
     	double mag=Double.parseDouble(magnitude);
     	double exp=Double.parseDouble(exponent);
-    	wallForceExponents[wallIndex]=exp; 
-    	WALL_FORCE_CONSTANT[wallIndex]=mag;
-    	
+    	wallForceExponents[wallIndex]=exp;
+		WALL_FORCE_CONSTANT[wallIndex]=mag;
     }
+    
 	public void createMuscle(String id1, String id2, String rest, String K, String amp){
 		double restLength=Double.parseDouble(rest);
 		double springConstant=Double.parseDouble(K);
