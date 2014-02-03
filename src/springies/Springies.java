@@ -33,6 +33,7 @@ public class Springies extends JGEngine{
 	public static double viscosity = 5;
 	private static final String DEFAULT_VELOCITY="0";
 	private static final String DEFAULT_MASS="1";
+	private static final String DEFAULT_REST="150";
 	public static final String DEFAULT_SPRINGCONSTANT="1";
 	private static final double WALL_FORCE_CONSTANT = 100000;
 	private static final double CENTEROFMASS_FORCE_CONSTANT = 50000;
@@ -97,9 +98,9 @@ public class Springies extends JGEngine{
 
 				if (node.getNodeType() == Node.ELEMENT_NODE) {
 					Element element = (Element) node;
-					String id=getValue("id", element);
-					String xpos=getValue("xpos", element);
-					String ypos=getValue("ypos", element);
+					String id=element.getAttribute("id");
+					String xpos=element.getAttribute("x");
+					String ypos=element.getAttribute("y");
 					createFixed(id, xpos, ypos);
 					
 					//System.out.println("ID: " + id);
@@ -114,28 +115,28 @@ public class Springies extends JGEngine{
 				Node node=nodes.item(i);
 				if(node.getNodeType()==Node.ELEMENT_NODE){
 					Element element = (Element) node;
-				
-					String id=getValue("id", element);
-					String xpos=getValue("xpos", element);
-					String ypos=getValue("ypos", element);
+					String id=element.getAttribute("id");
+					String xpos=element.getAttribute("x");
+					String ypos=element.getAttribute("y");
 					String xVeloc=null;
 					String yVeloc=null;
 					String mass=null;
 					try{
-						xVeloc=getValue("xVeloc", element);
-						yVeloc=getValue("yVeloc", element);
+						xVeloc=element.getAttribute("vx");
+						yVeloc=element.getAttribute("vy");
 					}
 					catch(Exception ex){
 						xVeloc=DEFAULT_VELOCITY;
 						yVeloc=DEFAULT_VELOCITY;
 					}
 					try{
-						mass=getValue("massVal", element);
+						mass=element.getAttribute("mass");
 					}
 					catch(Exception ex){
+					}
+					if(mass==""){
 						mass=DEFAULT_MASS;
 					}
-					
 					createMass(id, xpos, ypos, xVeloc, yVeloc, mass);
 					
 					//System.out.println("ID: " + id);
@@ -146,42 +147,70 @@ public class Springies extends JGEngine{
 					//System.out.println("Mass: " + mass);
 				}
 			}
-			//Reading Springs
-			nodes=doc.getElementsByTagName("spring");
-			for(int i=0; i <nodes.getLength(); i++){
-				Node node=nodes.item(i);
-				if(node.getNodeType()==Node.ELEMENT_NODE){
-					Element element = (Element) node;
-				
-					String id1=getValue("id1", element);
-					String id2=getValue("id2", element);
-					String restLength=getValue("rest", element);
-					String springConstant=null;
-					try{
-						springConstant=getValue("constant", element);
+			//Reading Springs and muscles
+			String[] array={"spring", "muscle"};
+			for(String s: array){
+				nodes=doc.getElementsByTagName(s);
+				for(int i=0; i <nodes.getLength(); i++){
+					Node node=nodes.item(i);
+					if(node.getNodeType()==Node.ELEMENT_NODE){
+						Element element = (Element) node;
+						String id1=element.getAttribute("a");
+						String id2=element.getAttribute("b");
+						String restLength=null;
+						String springConstant=null;
+						String amplitude=null;
+						try{
+							restLength=element.getAttribute("restlength");
+						}
+						catch(Exception ex){
+						}
+						if(restLength==""){
+							restLength=DEFAULT_REST;
+						}
+						try{
+							springConstant=element.getAttribute("constant");
+						}
+						catch(Exception ex){
+							springConstant=DEFAULT_SPRINGCONSTANT;
+						}
+						if(springConstant==""){
+							springConstant=DEFAULT_SPRINGCONSTANT;
+						}
+						try{
+							amplitude=element.getAttribute("amplitude");
+						}
+						catch(Exception ex){
+						}
+						
+						if(amplitude!=""){
+							createMuscle(id1, id2, restLength, springConstant, amplitude);
+						}
+						else{
+							createSpring(id1, id2, restLength, springConstant);
+						}
+						
+						//System.out.println("id1: " + id1);
+						//System.out.println("id2: " + id2);
+						//System.out.println("Rest Length: " + restLength);
+						//System.out.println("K: " + springConstant);
 					}
-					catch(Exception ex){
-						springConstant=DEFAULT_SPRINGCONSTANT;
-					}
-					
-					
-					createSpring(id1, id2, restLength, springConstant);
-					//System.out.println("id1: " + id1);
-					//System.out.println("id2: " + id2);
-					//System.out.println("Rest Length: " + restLength);
-					//System.out.println("K: " + springConstant);
-				}
 			}
+			}
+				
+			
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	private String getValue(String tag, Element element) {
-		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
-		Node node = (Node) nodes.item(0);
-		return node.getNodeValue();
-	}
 
+	public void createMuscle(String id1, String id2, String rest, String K, String amp){
+		double restLength=Double.parseDouble(rest);
+		double springConstant=Double.parseDouble(K);
+		double amplitude=Double.parseDouble(amp);
+		new Muscle(id1, id2, restLength, springConstant, amplitude);
+	}
 	public void createSpring(String id1, String id2, String rest, String K){
 		double restLength=Double.parseDouble(rest);
 		double springConstant=Double.parseDouble(K);
@@ -194,12 +223,12 @@ public class Springies extends JGEngine{
 		double xVelocity=Double.parseDouble(xveloc);
 		double yVelocity=Double.parseDouble(yveloc);
 		double massValue=Double.parseDouble(mass);
-		new Mass(id, xPosition*displayWidth(), yPosition*displayHeight(), xVelocity, yVelocity, massValue);
+		new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue);
 	}
 	public void createFixed(String id, String xpos, String ypos){
 		double xPosition=Double.parseDouble(xpos);
 		double yPosition=Double.parseDouble(ypos);
-		new FixedMass(id, xPosition*displayWidth(), yPosition*displayHeight());
+		new FixedMass(id, xPosition, yPosition);
 	
 	}
 	
@@ -231,8 +260,8 @@ public class Springies extends JGEngine{
         // update game objects
     	Vec2 center = findCenterOfMass();
     	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
-    		applyViscosity(b);
-    	    applyWallForce(b);
+    	   applyViscosity(b);
+    	   applyWallForce(b);
     	   applyCenterOfMassForce(b, center);
     	}
         WorldManager.getWorld().step(1f, 1);

@@ -17,11 +17,13 @@
 		<ypos>.6</ypos>
 		<massVal>2</massVal>
 	</mass>
-	<spring>
-		<id1>FixedMass2</id1>
+	<muscle>
+		<id1>FixedMass1</id1>
 		<id2>Mass2</id2>
-		<rest>10</rest>
-	</spring>
+		<rest>200</rest>
+		<constant>3</constant>
+		<amp>100</amp>
+	</muscle>
 </fixedMasses>
 
 
