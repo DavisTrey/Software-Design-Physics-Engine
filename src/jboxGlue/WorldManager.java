@@ -16,6 +16,7 @@ public class WorldManager
     public static World ourWorld;
     private static HashMap<String, Body> myBodies = new HashMap<String, Body>();
     private static HashSet<Spring> mySprings=new HashSet<Spring>();
+    private static Vec2 myCenterOfMass = new Vec2(0,0);
     static {
         ourWorld = null;
     }
@@ -49,5 +50,12 @@ public class WorldManager
     }
     public static void addSpring(Spring s){
     	mySprings.add(s);
+    }
+    
+    public static Vec2 getCenterOfMass(){
+    	return myCenterOfMass;
+    }
+    public static void setCenterOfMass(Vec2 newCenter){
+    	myCenterOfMass = newCenter;
     }
 }

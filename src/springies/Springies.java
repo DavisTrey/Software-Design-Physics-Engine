@@ -10,13 +10,17 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import jboxGlue.CenterOfMassForce;
 import jboxGlue.FixedMass;
+import jboxGlue.Force;
+import jboxGlue.GravityForce;
 import jboxGlue.Mass;
 import jboxGlue.Muscle;
 import jboxGlue.PhysicalObject;
 import jboxGlue.PhysicalObjectCircle;
 import jboxGlue.PhysicalObjectRect;
 import jboxGlue.Spring;
+import jboxGlue.ViscosityForce;
 import jboxGlue.WorldManager;
 import jgame.JGColor;
 import jgame.JGObject;
@@ -32,16 +36,20 @@ import org.w3c.dom.NodeList;
 
 
 public class Springies extends JGEngine{
-	private static double viscosity= 5;
 	protected static final String DEFAULT_VELOCITY="0";
 	protected static final String DEFAULT_MASS="1";
 	protected static final String DEFAULT_REST="150";
 	protected static final String DEFAULT_SPRINGCONSTANT="1";
-	private static double CENTEROFMASS_FORCE_CONSTANT = 2000;
-	private static double CENTEROFMASS_EXPONENT = 2;
+	private static final double DEFAULT_GRAVITY = 100;
+	private static final double DEFAULT_VISCOSITY = 2;
+	private static final double DEFAULT_CENTEROFMASS_FORCE_CONSTANT = 2;
+	private static final double DEFAULT_CENTEROFMASS_EXPONENT = 2;
 	private static double[] wallForceExponents = {2,2,2,2};
 	private static double WALL_FORCE_CONSTANT[] = {100000, 100000, 100000, 100000};
+	private Vec2 centerOfMass = new Vec2(0,0);
 	private static PhysicalObject[] walls = new PhysicalObject[4];
+	// Forces are indexed as follows: 0=gravity, 1=viscosity, 2=centerofmass, 3=top wall, 4=right wall, 5=bottom wall, 6=left wall
+	private static Force[] forces = new Force[7];
 	
     public Springies (){
 
@@ -73,8 +81,9 @@ public class Springies extends JGEngine{
         // so gravity is up in world coords and down in game coords
         // so set all directions (e.g., forces, velocities) in world coords
         WorldManager.initWorld(this);
-        WorldManager.getWorld().setGravity(new Vec2(0.0f, 0.1f));
+        WorldManager.getWorld().setGravity(new Vec2(0.0f, 0.0f));
         addWalls();
+        addForces();
         XMLMessage();
         
     }
@@ -268,15 +277,13 @@ public class Springies extends JGEngine{
     public void alterGravity(String direction, String magnitude){
     	double direct=Double.parseDouble(direction);
     	double mag=Double.parseDouble(magnitude);
-    	Vec2 vector=new Vec2((float)(mag*Math.cos(direct*3.14/180)),(float)(mag*Math.sin(direct*3.14/180)));
-    	WorldManager.getWorld().setGravity(vector);
+    	forces[0] = new GravityForce(mag, direct);
     }
     public void alterViscosity(String magnitude){
-    	viscosity=Double.parseDouble(magnitude);
+    	forces[1] = new ViscosityForce(Double.parseDouble(magnitude));
     }
     public void alterCenterMass(String magnitude, String exponent){
-    	CENTEROFMASS_FORCE_CONSTANT=Double.parseDouble(magnitude);
-		CENTEROFMASS_EXPONENT=Double.parseDouble(exponent);
+    	forces[2] = new CenterOfMassForce(Double.parseDouble(magnitude),Double.parseDouble(exponent));
     }
     
     public void alterWall(String id, String magnitude, String exponent){
@@ -314,7 +321,13 @@ public class Springies extends JGEngine{
 	
 	}
 	
-    private void addWalls ()
+    private void addForces() {
+		forces[0] = new GravityForce(DEFAULT_GRAVITY, 90);
+		forces[1] = new ViscosityForce(DEFAULT_VISCOSITY);
+		forces[2] = new CenterOfMassForce(DEFAULT_CENTEROFMASS_FORCE_CONSTANT, DEFAULT_CENTEROFMASS_EXPONENT);
+	}
+
+	private void addWalls ()
     {
         // add walls to bounce off of
         // NOTE: immovable objects must have no mass
@@ -340,11 +353,9 @@ public class Springies extends JGEngine{
     public void doFrame ()
     {
         // update game objects
-    	Vec2 center = findCenterOfMass();
+    	setCenterOfMass();
     	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
-    	   applyViscosity(b);
-    	   applyWallForce(b);
-    	   applyCenterOfMassForce(b, center);
+    	   applyForces(b);
     	}
         WorldManager.getWorld().step(1f, 1);
     	applySpringForce();
@@ -352,20 +363,17 @@ public class Springies extends JGEngine{
         checkCollision(2, 1);
     }
 
-	private void applyCenterOfMassForce(Body b, Vec2 centerOfMass) {
-		double xComp = centerOfMass.x - b.m_xf.position.x;
-		double yComp = centerOfMass.y - b.m_xf.position.y;
-		double distance = Math.sqrt(Math.pow(xComp, 2)+Math.pow(yComp, 2));
-		xComp = xComp/distance;
-		yComp = yComp/distance;
-		double magnitude = CENTEROFMASS_FORCE_CONSTANT/Math.pow(distance, Math.abs(CENTEROFMASS_EXPONENT));
-		Vec2 comForce = new Vec2((float)(magnitude*xComp),(float)(magnitude*yComp));
-		if(CENTEROFMASS_EXPONENT<0){
-			b.applyForce(comForce.negate(), b.m_xf.position);
+	private void applyForces(Body b) {
+		for(int i=0; i<3; i++){
+			forces[i].applyForce(b);
 		}
-		else{
-			b.applyForce(comForce, b.m_xf.position);
-		}
+	}
+	private void applyWallForce(Body b) {
+	
+		b.applyForce(new Vec2((float)0,(float)(WALL_FORCE_CONSTANT[0]/(Math.pow(Math.abs(b.m_xf.position.y-walls[0].y),wallForceExponents[0])))), b.m_xf.position);
+		b.applyForce(new Vec2((float)((-1)*WALL_FORCE_CONSTANT[1]/(Math.pow(Math.abs(b.m_xf.position.x-walls[1].x),wallForceExponents[1]))), (float)0), b.m_xf.position);
+		b.applyForce(new Vec2((float)0,(float)((-1)*WALL_FORCE_CONSTANT[2]/(Math.pow(Math.abs(b.m_xf.position.y-walls[2].y),wallForceExponents[2])))), b.m_xf.position);
+		b.applyForce(new Vec2((float)(WALL_FORCE_CONSTANT[3]/(Math.pow(Math.abs(b.m_xf.position.x-walls[3].x),wallForceExponents[3]))), (float)0), b.m_xf.position);
 	}
 
 	private void applySpringForce(){
@@ -376,19 +384,8 @@ public class Springies extends JGEngine{
     		s.applyForce();
     	}
     }
-	private void applyWallForce(Body b) {
-	
-		b.applyForce(new Vec2((float)0,(float)(WALL_FORCE_CONSTANT[0]/(Math.pow(Math.abs(b.m_xf.position.y-walls[0].y),wallForceExponents[0])))), b.m_xf.position);
-		b.applyForce(new Vec2((float)((-1)*WALL_FORCE_CONSTANT[1]/(Math.pow(Math.abs(b.m_xf.position.x-walls[1].x),wallForceExponents[1]))), (float)0), b.m_xf.position);
-		b.applyForce(new Vec2((float)0,(float)((-1)*WALL_FORCE_CONSTANT[2]/(Math.pow(Math.abs(b.m_xf.position.y-walls[2].y),wallForceExponents[2])))), b.m_xf.position);
-		b.applyForce(new Vec2((float)(WALL_FORCE_CONSTANT[3]/(Math.pow(Math.abs(b.m_xf.position.x-walls[3].x),wallForceExponents[3]))), (float)0), b.m_xf.position);
-	}
 
-	private void applyViscosity(Body b) {
-		b.applyForce(new Vec2((float)viscosity*-1*b.getLinearVelocity().x,
-				(float)viscosity*-1*b.getLinearVelocity().y), b.m_xf.position);
-	}
-    private Vec2 findCenterOfMass() {
+	private void setCenterOfMass() {
     	double initx = 0;
     	double inity = 0;
     	double totalmass = 0;
@@ -397,7 +394,7 @@ public class Springies extends JGEngine{
     		inity+=(b.m_xf.position.y)*(b.getMass());
     		totalmass+=b.getMass();
     	}
-    	return new Vec2((float)(initx/totalmass),(float)(inity/totalmass));
+    	WorldManager.setCenterOfMass(new Vec2((float)(initx/totalmass),(float)(inity/totalmass)));
 	}
 
     @Override
