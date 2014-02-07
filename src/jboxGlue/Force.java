@@ -12,5 +12,8 @@ public abstract class Force {
 	public void toggleForce(){
 		isOn = !isOn;
 	}
+	public boolean isOn(){
+		return isOn;
+	}
 	public abstract void applyForce(Body b);
 }

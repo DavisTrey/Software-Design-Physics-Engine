@@ -356,6 +356,7 @@ public class Springies extends JGEngine{
 	@Override
     public void doFrame ()
     {
+		checkKeyInput();
         // update game objects
     	setCenterOfMass();
     	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
@@ -366,6 +367,38 @@ public class Springies extends JGEngine{
         moveObjects();
         checkCollision(2, 1);
     }
+
+	private void checkKeyInput() {
+		//Listen for key input
+		if(getKey('G')){
+			clearKey('G');
+			forces[0].toggleForce();
+		}
+		if(getKey('V')){
+			clearKey('V');
+			forces[1].toggleForce();
+		}
+		if(getKey('M')){
+			clearKey('M');
+			forces[2].toggleForce();
+		}
+		if(getKey('1')){
+			clearKey('1');
+			forces[3].toggleForce();
+		}
+		if(getKey('2')){
+			clearKey('2');
+			forces[4].toggleForce();
+		}
+		if(getKey('3')){
+			clearKey('3');
+			forces[5].toggleForce();
+		}
+		if(getKey('4')){
+			clearKey('4');
+			forces[6].toggleForce();
+		}
+	}
 
 	private void applyForces(Body b) {
 		for(int i=0; i<7; i++){
@@ -396,7 +429,22 @@ public class Springies extends JGEngine{
     @Override
     public void paintFrame ()
     {
-        // nothing to do
-        // the objects paint themselves
+    	StringBuilder forceStatus = new StringBuilder();
+    	if(forces[0].isOn())
+    		forceStatus.append("G ");
+    	if(forces[1].isOn())
+    		forceStatus.append("V ");
+    	if(forces[2].isOn())
+    		forceStatus.append("M ");
+    	if(forces[3].isOn())
+    		forceStatus.append("1 ");
+    	if(forces[4].isOn())
+    		forceStatus.append("2 ");
+    	if(forces[5].isOn())
+    		forceStatus.append("3 ");
+    	if(forces[6].isOn())
+    		forceStatus.append("4 ");
+		drawString(forceStatus.toString(), 20,20,-1);
     }
+
 }
