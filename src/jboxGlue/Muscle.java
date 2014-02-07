@@ -18,5 +18,11 @@ public class Muscle extends Spring{
 		myTime=myTime+.1;
 		restLength=(originalLength+myAmplitude*Math.sin(myTime));
 	}
-
+	
+	public void incrementAmplitude(){
+		myAmplitude+=10;
+	}
+	public void decrementAmplitude(){
+		myAmplitude-=10;
+	}
 }

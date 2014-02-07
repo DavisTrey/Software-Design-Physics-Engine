@@ -419,6 +419,31 @@ public class Springies extends JGEngine{
 			updateWallForce();
 			addWalls();
 		}
+		if(getKey('=')||getKey('+')){
+			clearKey('=');
+			clearKey('+');
+			incrementAmplitudes();
+		}
+		if(getKey('-')){
+			clearKey('-');
+			decrementAmplitudes();
+		}
+	}
+
+	private void decrementAmplitudes() {
+    	HashSet<Spring> springs=WorldManager.getSprings();
+    	for(Spring s: springs){
+    		if(s instanceof Muscle)
+    			((Muscle) s).decrementAmplitude();
+    	}
+	}
+
+	private void incrementAmplitudes() {
+    	HashSet<Spring> springs=WorldManager.getSprings();
+    	for(Spring s: springs){
+    		if(s instanceof Muscle)
+    			((Muscle) s).incrementAmplitude();
+    	}
 	}
 
 	private void updateWallForce() {
