@@ -2,7 +2,9 @@ package springies;
 
 import java.awt.Frame;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -41,7 +43,7 @@ public class Springies extends JGEngine{
 	protected static final String DEFAULT_MASS="1";
 	protected static final String DEFAULT_REST="150";
 	protected static final String DEFAULT_SPRINGCONSTANT="1";
-	private static final double DEFAULT_GRAVITY = 100;
+	private static final double DEFAULT_GRAVITY = 20;
 	private static final double DEFAULT_VISCOSITY = 2;
 	private static final double DEFAULT_CENTEROFMASS_FORCE_CONSTANT = 2;
 	private static final double DEFAULT_CENTEROFMASS_EXPONENT = 2;
@@ -50,6 +52,7 @@ public class Springies extends JGEngine{
 	private Vec2 centerOfMass = new Vec2(0,0);
 	private static PhysicalObject[] walls = new PhysicalObject[4];
 	private int wallModifier = 0;
+	private int assemblyNumber = 0;
 	// Forces are indexed as follows: 0=gravity, 1=viscosity, 2=centerofmass, 3=top wall, 4=right wall, 5=bottom wall, 6=left wall
 	private static Force[] forces = new Force[7];
 	
@@ -83,7 +86,7 @@ public class Springies extends JGEngine{
         // so gravity is up in world coords and down in game coords
         // so set all directions (e.g., forces, velocities) in world coords
         WorldManager.initWorld(this);
-        WorldManager.getWorld().setGravity(new Vec2(0.0f, 0.0f));
+        WorldManager.getWorld(0).setGravity(new Vec2(0.0f, 0.0f));
         addWalls();
         addForces();
         XMLMessage();
@@ -313,12 +316,12 @@ public class Springies extends JGEngine{
 		double xVelocity=Double.parseDouble(xveloc);
 		double yVelocity=Double.parseDouble(yveloc);
 		double massValue=Double.parseDouble(mass);
-		new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue);
+		new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber);
 	}
 	public void createFixed(String id, String xpos, String ypos){
 		double xPosition=Double.parseDouble(xpos);
 		double yPosition=Double.parseDouble(ypos);
-		new FixedMass(id, xPosition, yPosition);
+		new FixedMass(id, xPosition, yPosition, assemblyNumber);
 	
 	}
 	private void addWalls ()
@@ -329,18 +332,20 @@ public class Springies extends JGEngine{
         final double WALL_THICKNESS = 10;
         final double WALL_WIDTH = displayWidth() + wallModifier - WALL_MARGIN * 2 + WALL_THICKNESS;
         final double WALL_HEIGHT = displayHeight() + wallModifier - WALL_MARGIN * 2 + WALL_THICKNESS;
+        for(int i=0; i<WorldManager.getWorlds().size(); i++){
         walls[0] = new PhysicalObjectRect("wall", 2, JGColor.green,
-                                                     WALL_WIDTH, WALL_THICKNESS);
+                                                     WALL_WIDTH, WALL_THICKNESS, i);
         walls[0].setPos((displayWidth() + wallModifier) / 2, WALL_MARGIN);
         walls[2] = new PhysicalObjectRect("wall", 2, JGColor.green,
-                                      WALL_WIDTH, WALL_THICKNESS);
+                                      WALL_WIDTH, WALL_THICKNESS, i);
         walls[2].setPos((displayWidth() + wallModifier) / 2, displayHeight() + wallModifier - WALL_MARGIN);
         walls[3] = new PhysicalObjectRect("wall", 2, JGColor.green,
-                                      WALL_THICKNESS, WALL_HEIGHT);
+                                      WALL_THICKNESS, WALL_HEIGHT, i);
         walls[3].setPos(WALL_MARGIN, (displayHeight() + wallModifier) / 2);
         walls[1] = new PhysicalObjectRect("wall", 2, JGColor.green,
-                                      WALL_THICKNESS, WALL_HEIGHT);
+                                      WALL_THICKNESS, WALL_HEIGHT, i);
         walls[1].setPos(displayWidth() + wallModifier - WALL_MARGIN, (displayHeight() + wallModifier) / 2);
+        }
     }
 
     // addWalls must be called before this method is called!!!
@@ -366,10 +371,12 @@ public class Springies extends JGEngine{
 		checkKeyInput();
         // update game objects
     	setCenterOfMass();
-    	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
+    	for(int i=0; i<WorldManager.getWorlds().size(); i++){
+    	for(Body b=WorldManager.getWorld(i).getBodyList(); b!=null; b=b.getNext()){
     	   applyForces(b);
     	}
-        WorldManager.getWorld().step(1f, 1);
+        WorldManager.getWorld(i).step(1f, 1);
+    	}
     	applySpringForce();
         moveObjects();
         checkCollision(2, 1);
@@ -428,6 +435,10 @@ public class Springies extends JGEngine{
 			clearKey('-');
 			decrementAmplitudes();
 		}
+		if(getKey('N')){
+			clearKey('N');
+			assemblyNumber++;
+		}
 	}
 
 	private void decrementAmplitudes() {
@@ -435,7 +446,7 @@ public class Springies extends JGEngine{
     	for(Spring s: springs){
     		if(s instanceof Muscle)
     			((Muscle) s).decrementAmplitude();
-    	}
+		}
 	}
 
 	private void incrementAmplitudes() {
@@ -443,7 +454,7 @@ public class Springies extends JGEngine{
     	for(Spring s: springs){
     		if(s instanceof Muscle)
     			((Muscle) s).incrementAmplitude();
-    	}
+		}
 	}
 
 	private void updateWallForce() {
@@ -463,19 +474,21 @@ public class Springies extends JGEngine{
     		if(s instanceof Muscle)
     			((Muscle) s).incrementMuscle();
     		s.applyForce();
-    	}
+		}
     }
 
 	private void setCenterOfMass() {
     	double initx = 0;
     	double inity = 0;
     	double totalmass = 0;
-    	for(Body b=WorldManager.getWorld().getBodyList(); b!=null; b=b.getNext()){
+    	for(int i=0; i<WorldManager.getWorlds().size(); i++){
+    	for(Body b=WorldManager.getWorld(i).getBodyList(); b!=null; b=b.getNext()){
     		initx+=(b.m_xf.position.x)*(b.getMass());
     		inity+=(b.m_xf.position.y)*(b.getMass());
     		totalmass+=b.getMass();
     	}
-    	WorldManager.setCenterOfMass(new Vec2((float)(initx/totalmass),(float)(inity/totalmass)));
+    	WorldManager.setCenterOfMass(new Vec2((float)(initx/totalmass),(float)(inity/totalmass)),i);
+    	}
 	}
 
     @Override

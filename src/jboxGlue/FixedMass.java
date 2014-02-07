@@ -7,11 +7,11 @@ import jboxGlue.PhysicalObjectCircle;
 
 public class FixedMass extends PhysicalObjectCircle {
 	private static final double DEFAULT_MASS = 1;
-	private static final double DEFAULT_RADIUS = 10;
+	private static final double DEFAULT_RADIUS = 4;
 	private double myX;
 	private double myY;
-	public FixedMass(String id, double x, double y){
-		super(id, 1, JGColor.red, DEFAULT_RADIUS, DEFAULT_MASS);
+	public FixedMass(String id, double x, double y, int world){
+		super(id, 1, JGColor.red, DEFAULT_RADIUS, DEFAULT_MASS, world);
 		myX = x;
 		myY = y;
 		this.setPos(x, y);
@@ -20,7 +20,7 @@ public class FixedMass extends PhysicalObjectCircle {
     public void move ()
     {
         // if the JGame object was deleted, remove the physical object too
-        if (myBody.m_world != WorldManager.getWorld()) {
+        if (myBody.m_world != WorldManager.getWorld(worldID)) {
             remove();
             return;
         }

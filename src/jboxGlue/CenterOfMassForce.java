@@ -10,10 +10,9 @@ public class CenterOfMassForce extends Force {
 		exponent = power;
 	}
 
-	@Override
-	public void applyForce(Body b) {
+	public void applyForce(Body b, int world) {
 		if(isOn){
-			Vec2 centerOfMass = WorldManager.getCenterOfMass();
+			Vec2 centerOfMass = WorldManager.getCenterOfMass(world);
 			double xComp = centerOfMass.x - b.m_xf.position.x;
 			double yComp = centerOfMass.y - b.m_xf.position.y;
 			double distance = Math.sqrt(Math.pow(xComp, 2)+Math.pow(yComp, 2));
@@ -28,6 +27,12 @@ public class CenterOfMassForce extends Force {
 				b.applyForce(comForce, b.m_xf.position);
 			}
 		}
+	}
+
+	// not sure what to do here, since this method NEEDS the second argument to run.
+	public void applyForce(Body b) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

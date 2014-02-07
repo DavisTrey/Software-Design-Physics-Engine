@@ -15,9 +15,9 @@ public class PhysicalObjectRect extends PhysicalObject
                                int collisionId,
                                JGColor color,
                                double width,
-                               double height)
+                               double height, int world)
     {
-        this(id, collisionId, color, width, height, 0);
+        this(id, collisionId, color, width, height, 0, world);
     }
 
     public PhysicalObjectRect (String id,
@@ -25,9 +25,9 @@ public class PhysicalObjectRect extends PhysicalObject
                                JGColor color,
                                double width,
                                double height,
-                               double mass)
+                               double mass, int world)
     {
-        super(id, collisionId, color);
+        super(id, collisionId, color, world);
         init(width, height, mass);
     }
 

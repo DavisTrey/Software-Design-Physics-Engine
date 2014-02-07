@@ -11,18 +11,18 @@ public class PhysicalObjectCircle extends PhysicalObject
     public PhysicalObjectCircle (String id,
                                  int collisionId,
                                  JGColor color,
-                                 double radius)
+                                 double radius, int world)
     {
-        this(id, collisionId, color, radius, 0);
+        this(id, collisionId, color, radius, 0, world);
     }
 
     public PhysicalObjectCircle (String id,
                                  int collisionId,
                                  JGColor color,
                                  double radius,
-                                 double mass)
+                                 double mass, int world)
     {
-        super(id, collisionId, color);
+        super(id, collisionId, color, world);
         init(radius, mass);
     }
 

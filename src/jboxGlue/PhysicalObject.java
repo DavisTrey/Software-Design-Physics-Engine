@@ -17,11 +17,13 @@ public abstract class PhysicalObject extends JGObject
     protected Body myBody;
     protected float myRotation;
     protected boolean isDestroyed;
+    protected int worldID;
 
-    protected PhysicalObject (String name, int collisionId, JGColor color)
+    protected PhysicalObject (String name, int collisionId, JGColor color, int world)
     {
         super(name, true, 0, 0, collisionId, null);
         isDestroyed = false;
+        worldID = world;
         init(color, false);
     }
 
@@ -44,11 +46,11 @@ public abstract class PhysicalObject extends JGObject
 
     protected void createBody (ShapeDef shapeDefinition)
     {
-        myBody = WorldManager.getWorld().createBody(new BodyDef());
+        myBody = WorldManager.getWorld(worldID).createBody(new BodyDef());
         myBody.createShape(shapeDefinition);
         myBody.setUserData(this); // for following body back to JGObject
         myBody.setMassFromShapes();
-        myBody.m_world = WorldManager.getWorld();
+        myBody.m_world = WorldManager.getWorld(worldID);
     }
 
     public Body getBody ()
@@ -85,7 +87,7 @@ public abstract class PhysicalObject extends JGObject
     public void move ()
     {
         // if the JGame object was deleted, remove the physical object too
-        if (myBody.m_world != WorldManager.getWorld()) {
+        if (myBody.m_world != WorldManager.getWorld(worldID)) {
             remove();
             return;
         }
@@ -116,9 +118,9 @@ public abstract class PhysicalObject extends JGObject
     {
     	isDestroyed = true;
         // body may not be in actual world. If not, do not call destroyBody.
-        if (myBody.m_world == WorldManager.getWorld()) {
+        if (myBody.m_world == WorldManager.getWorld(worldID)) {
             // also destroys associated joints
-            WorldManager.getWorld().destroyBody(myBody);
+            WorldManager.getWorld(worldID).destroyBody(myBody);
         }
     }
 
