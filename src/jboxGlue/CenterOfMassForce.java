@@ -19,7 +19,7 @@ public class CenterOfMassForce extends Force {
 			xComp = xComp/distance;
 			yComp = yComp/distance;
 			double forceMagnitude = magnitude/Math.pow(distance, Math.abs(exponent));
-			Vec2 comForce = new Vec2((float)(magnitude*xComp),(float)(magnitude*yComp));
+			Vec2 comForce = new Vec2((float)(forceMagnitude*xComp),(float)(forceMagnitude*yComp));
 			if(exponent<0){
 				b.applyForce(comForce.negate(), b.m_xf.position);
 			}

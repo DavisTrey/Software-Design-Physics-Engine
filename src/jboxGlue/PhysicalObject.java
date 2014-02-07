@@ -24,7 +24,22 @@ public abstract class PhysicalObject extends JGObject
         super(name, true, 0, 0, collisionId, null);
         isDestroyed = false;
         worldID = world;
-        init(color, false);
+		JGColor myColor = JGColor.white;
+		if(world%8==1)
+			myColor = JGColor.red;
+		if(world%8==2)
+			myColor = JGColor.cyan;
+		if(world%8==3)
+			myColor = JGColor.magenta;
+		if(world%8==4)
+			myColor = JGColor.yellow;
+		if(world%8==5)
+			myColor = JGColor.pink;
+		if(world%8==6)
+			myColor = JGColor.gray;
+		if(world%8==7)
+			myColor = JGColor.blue;
+        init(myColor, false);
     }
 
     protected PhysicalObject (String name, int collisionId, String gfxname)

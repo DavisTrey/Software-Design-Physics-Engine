@@ -45,7 +45,7 @@ public class Springies extends JGEngine{
 	protected static final String DEFAULT_SPRINGCONSTANT="1";
 	private static final double DEFAULT_GRAVITY = 20;
 	private static final double DEFAULT_VISCOSITY = 2;
-	private static final double DEFAULT_CENTEROFMASS_FORCE_CONSTANT = 2;
+	private static final double DEFAULT_CENTEROFMASS_FORCE_CONSTANT = 200;
 	private static final double DEFAULT_CENTEROFMASS_EXPONENT = 2;
 	private static final double[] DEFAULT_WALL_FORCE_EXPONENTS = {2,2,2,2};
 	private static final double DEFAULT_WALL_FORCE_CONSTANT[] = {100000, 100000, 100000, 100000};
@@ -374,6 +374,7 @@ public class Springies extends JGEngine{
     	for(int i=0; i<WorldManager.getWorlds().size(); i++){
     	for(Body b=WorldManager.getWorld(i).getBodyList(); b!=null; b=b.getNext()){
     	   applyForces(b);
+    	   ((CenterOfMassForce)forces[2]).applyForce(b,i);
     	}
         WorldManager.getWorld(i).step(1f, 1);
     	}
@@ -438,6 +439,9 @@ public class Springies extends JGEngine{
 		if(getKey('N')){
 			clearKey('N');
 			assemblyNumber++;
+	        WorldManager.initWorld(this);
+	        WorldManager.getWorld(assemblyNumber).setGravity(new Vec2(0.0f, 0.0f));
+			XMLMessage();
 		}
 	}
 
