@@ -28,5 +28,8 @@ public class WallForce extends Force{
 				b.applyForce(new Vec2((float)(magnitude/(Math.pow(Math.abs(b.m_xf.position.x-myWall.x),exponent))), (float)0), b.m_xf.position);
 		}
 	}
+	public void editWall(PhysicalObject wall){
+		myWall = wall;
+	}
 
 }

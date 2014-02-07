@@ -16,10 +16,12 @@ public abstract class PhysicalObject extends JGObject
     protected JGColor myColor;
     protected Body myBody;
     protected float myRotation;
+    protected boolean isDestroyed;
 
     protected PhysicalObject (String name, int collisionId, JGColor color)
     {
         super(name, true, 0, 0, collisionId, null);
+        isDestroyed = false;
         init(color, false);
     }
 
@@ -112,6 +114,7 @@ public abstract class PhysicalObject extends JGObject
     @Override
     public void destroy ()
     {
+    	isDestroyed = true;
         // body may not be in actual world. If not, do not call destroyBody.
         if (myBody.m_world == WorldManager.getWorld()) {
             // also destroys associated joints
@@ -123,9 +126,11 @@ public abstract class PhysicalObject extends JGObject
     public void paint ()
     {
         // only paint something if we need to draw a shape. Images are already drawn
+    	if (!isDestroyed){
         if (!myHasImage) {
             paintShape();
         }
+    	}
     }
 
     protected abstract void paintShape ();
