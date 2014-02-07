@@ -21,6 +21,7 @@ import jboxGlue.PhysicalObjectCircle;
 import jboxGlue.PhysicalObjectRect;
 import jboxGlue.Spring;
 import jboxGlue.ViscosityForce;
+import jboxGlue.WallForce;
 import jboxGlue.WorldManager;
 import jgame.JGColor;
 import jgame.JGObject;
@@ -44,8 +45,8 @@ public class Springies extends JGEngine{
 	private static final double DEFAULT_VISCOSITY = 2;
 	private static final double DEFAULT_CENTEROFMASS_FORCE_CONSTANT = 2;
 	private static final double DEFAULT_CENTEROFMASS_EXPONENT = 2;
-	private static double[] wallForceExponents = {2,2,2,2};
-	private static double WALL_FORCE_CONSTANT[] = {100000, 100000, 100000, 100000};
+	private static final double[] DEFAULT_WALL_FORCE_EXPONENTS = {2,2,2,2};
+	private static final double DEFAULT_WALL_FORCE_CONSTANT[] = {100000, 100000, 100000, 100000};
 	private Vec2 centerOfMass = new Vec2(0,0);
 	private static PhysicalObject[] walls = new PhysicalObject[4];
 	// Forces are indexed as follows: 0=gravity, 1=viscosity, 2=centerofmass, 3=top wall, 4=right wall, 5=bottom wall, 6=left wall
@@ -290,8 +291,7 @@ public class Springies extends JGEngine{
     	int wallIndex=(int)(Double.parseDouble(id)-1);
     	double mag=Double.parseDouble(magnitude);
     	double exp=Double.parseDouble(exponent);
-    	wallForceExponents[wallIndex]=exp;
-		WALL_FORCE_CONSTANT[wallIndex]=mag;
+    	forces[wallIndex+3] = new WallForce(mag, exp, wallIndex, walls[wallIndex]);
     }
     
 	public void createMuscle(String id1, String id2, String rest, String K, String amp){
@@ -320,13 +320,6 @@ public class Springies extends JGEngine{
 		new FixedMass(id, xPosition, yPosition);
 	
 	}
-	
-    private void addForces() {
-		forces[0] = new GravityForce(DEFAULT_GRAVITY, 90);
-		forces[1] = new ViscosityForce(DEFAULT_VISCOSITY);
-		forces[2] = new CenterOfMassForce(DEFAULT_CENTEROFMASS_FORCE_CONSTANT, DEFAULT_CENTEROFMASS_EXPONENT);
-	}
-
 	private void addWalls ()
     {
         // add walls to bounce off of
@@ -349,7 +342,18 @@ public class Springies extends JGEngine{
         walls[1].setPos(displayWidth() - WALL_MARGIN, displayHeight() / 2);
     }
 
-    @Override
+    // addWalls must be called before this method is called!!!
+	private void addForces() {
+		forces[0] = new GravityForce(DEFAULT_GRAVITY, 90);
+		forces[1] = new ViscosityForce(DEFAULT_VISCOSITY);
+		forces[2] = new CenterOfMassForce(DEFAULT_CENTEROFMASS_FORCE_CONSTANT, DEFAULT_CENTEROFMASS_EXPONENT);
+		forces[3] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[0], DEFAULT_WALL_FORCE_EXPONENTS[0],0,walls[0]);
+		forces[4] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[1], DEFAULT_WALL_FORCE_EXPONENTS[1],1,walls[1]);
+		forces[5] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[2], DEFAULT_WALL_FORCE_EXPONENTS[2],2,walls[2]);
+		forces[6] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[3], DEFAULT_WALL_FORCE_EXPONENTS[3],3,walls[3]);
+	}
+
+	@Override
     public void doFrame ()
     {
         // update game objects
@@ -364,18 +368,10 @@ public class Springies extends JGEngine{
     }
 
 	private void applyForces(Body b) {
-		for(int i=0; i<3; i++){
+		for(int i=0; i<7; i++){
 			forces[i].applyForce(b);
 		}
 	}
-	private void applyWallForce(Body b) {
-	
-		b.applyForce(new Vec2((float)0,(float)(WALL_FORCE_CONSTANT[0]/(Math.pow(Math.abs(b.m_xf.position.y-walls[0].y),wallForceExponents[0])))), b.m_xf.position);
-		b.applyForce(new Vec2((float)((-1)*WALL_FORCE_CONSTANT[1]/(Math.pow(Math.abs(b.m_xf.position.x-walls[1].x),wallForceExponents[1]))), (float)0), b.m_xf.position);
-		b.applyForce(new Vec2((float)0,(float)((-1)*WALL_FORCE_CONSTANT[2]/(Math.pow(Math.abs(b.m_xf.position.y-walls[2].y),wallForceExponents[2])))), b.m_xf.position);
-		b.applyForce(new Vec2((float)(WALL_FORCE_CONSTANT[3]/(Math.pow(Math.abs(b.m_xf.position.x-walls[3].x),wallForceExponents[3]))), (float)0), b.m_xf.position);
-	}
-
 	private void applySpringForce(){
     	HashSet<Spring> springs=WorldManager.getSprings();
     	for(Spring s: springs){
