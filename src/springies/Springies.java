@@ -64,6 +64,10 @@ public class Springies extends JGEngine{
 	//protected static PhysicalObject[] walls = new PhysicalObject[4];
 	private int wallModifier = 0;
 	protected int assemblyNumber = 0;
+	private boolean clickOn;
+	private Mass clickMass;
+	private Mass targetMass;
+	private Spring clickSpring;
 	// Forces are indexed as follows: 0=gravity, 1=viscosity, 2=centerofmass, 3=top wall, 4=right wall, 5=bottom wall, 6=left wall
 	protected static Force[] forces = new Force[7];
 	
@@ -279,6 +283,7 @@ public class Springies extends JGEngine{
     public void doFrame ()
     {
 		checkKeyInput();
+		checkMouseInput();
         // update game objects
 		for(CenterOfMass c: myCentersOfMass){
 			c.setCenterOfMass();
@@ -363,9 +368,44 @@ public class Springies extends JGEngine{
 			for(Spring s: mySprings){
 				s.destroy();
 			}
-			System.out.println(myBodies.size());
 			mySprings.clear();
+			fullBodyList.clear();
 			myCentersOfMass.clear();
+		}
+	}
+
+	private void checkMouseInput() {
+		if(getMouseButton(1)){
+			if(clickOn==false&&!fullBodyList.isEmpty()){
+				for(PhysicalObjectCircle p : fullBodyList){
+					if(p instanceof Mass){
+					if(targetMass==null){
+						targetMass = (Mass) p;
+					}
+					else{
+						if(Math.pow(Math.pow(p.getBody().m_xf.position.x-getMouseX(), 2)+Math.pow(p.getBody().m_xf.position.y-getMouseY(), 2), .5)
+								<Math.pow(Math.pow(targetMass.getBody().m_xf.position.x-getMouseX(), 2)+Math.pow(targetMass.getBody().m_xf.position.y-getMouseY(), 2), .5))
+							targetMass = (Mass)p;
+					}
+					}
+				}
+				clickOn = true;
+				clickMass = new Mass("-1", (double)getMouseX(), getMouseY(), (double)0, (double)0, (double).1, targetMass.getWorldID());
+				clickSpring = new Spring(clickMass, targetMass, 
+						Math.pow(Math.pow(targetMass.getBody().m_xf.position.x-getMouseX(), 2)+Math.pow(targetMass.getBody().m_xf.position.y-getMouseY(), 2), .5), 2);
+			}
+			if(clickMass!=null)
+				clickMass.setPos(getMouseX(), getMouseY());
+		}
+		if(!getMouseButton(1)){
+			if(clickOn){
+				clickOn=false;
+				targetMass = null;
+				clickMass.destroy();
+				clickMass = null;
+				clickSpring.destroy();
+				clickSpring = null;
+			}
 		}
 	}
 
@@ -400,6 +440,8 @@ public class Springies extends JGEngine{
     			((Muscle) s).incrementMuscle();
     		s.applyForce();
 		}
+    	if(clickSpring!=null)
+    		clickSpring.applyForce();
     }
     @Override
     public void paintFrame ()

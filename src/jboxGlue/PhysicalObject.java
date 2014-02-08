@@ -148,6 +148,9 @@ public abstract class PhysicalObject extends JGObject
         }
     	}
     }
+    public int getWorldID(){
+    	return worldID;
+    }
 
     protected abstract void paintShape ();
 }
