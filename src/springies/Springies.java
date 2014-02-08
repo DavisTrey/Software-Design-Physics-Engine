@@ -239,6 +239,17 @@ public class Springies extends JGEngine{
 	}
 	
 
+	// addWalls must be called before this method is called!!!
+	private void addForces() {
+		forces[0] = new GravityForce(DEFAULT_GRAVITY, 90);
+		forces[1] = new ViscosityForce(DEFAULT_VISCOSITY);
+		forces[2] = new CenterOfMassForce(DEFAULT_CENTEROFMASS_FORCE_CONSTANT, DEFAULT_CENTEROFMASS_EXPONENT, myCentersOfMass);
+		forces[3] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[0], DEFAULT_WALL_FORCE_EXPONENTS[0],0,myWalls[0]);
+		forces[4] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[1], DEFAULT_WALL_FORCE_EXPONENTS[1],1,myWalls[1]);
+		forces[5] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[2], DEFAULT_WALL_FORCE_EXPONENTS[2],2,myWalls[2]);
+		forces[6] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[3], DEFAULT_WALL_FORCE_EXPONENTS[3],3,myWalls[3]);
+	}
+
 	private void addWalls ()
     {
         // add walls to bounce off of
@@ -263,20 +274,15 @@ public class Springies extends JGEngine{
         }
     }
 
-    // addWalls must be called before this method is called!!!
-	private void addForces() {
-		forces[0] = new GravityForce(DEFAULT_GRAVITY, 90);
-		forces[1] = new ViscosityForce(DEFAULT_VISCOSITY);
-		forces[2] = new CenterOfMassForce(DEFAULT_CENTEROFMASS_FORCE_CONSTANT, DEFAULT_CENTEROFMASS_EXPONENT, myCentersOfMass);
-		forces[3] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[0], DEFAULT_WALL_FORCE_EXPONENTS[0],0,myWalls[0]);
-		forces[4] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[1], DEFAULT_WALL_FORCE_EXPONENTS[1],1,myWalls[1]);
-		forces[5] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[2], DEFAULT_WALL_FORCE_EXPONENTS[2],2,myWalls[2]);
-		forces[6] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[3], DEFAULT_WALL_FORCE_EXPONENTS[3],3,myWalls[3]);
-	}
-	
-	private void clearWalls(){
+    private void clearWalls(){
 		for(Wall w: myWalls){
 			w.destroy();
+		}
+	}
+
+	private void updateWallForce() {
+		for(int i=3; i<7; i++){
+			((WallForce) forces[i]).editWall(myWalls[i-3]);
 		}
 	}
 
@@ -285,16 +291,8 @@ public class Springies extends JGEngine{
     {
 		checkKeyInput();
 		checkMouseInput();
-        // update game objects
-		for(CenterOfMass c: myCentersOfMass){
-			c.setCenterOfMass();
-		}
-    	for(int i=0; i<WorldManager.getWorlds().size(); i++){
-    	for(Body b=WorldManager.getWorld(i).getBodyList(); b!=null; b=b.getNext()){
-    	   applyForces(b);
-    	}
-        WorldManager.getWorld(i).step(1f, 1);
-    	}
+		setCentersOfMass();
+    	applyAllForces();
     	applySpringForce();
         moveObjects();
         checkCollision(2, 1);
@@ -410,24 +408,19 @@ public class Springies extends JGEngine{
 		}
 	}
 
-	private void decrementAmplitudes() {
-    	for(Spring s: mySprings){
-    		if(s instanceof Muscle)
-    			((Muscle) s).decrementAmplitude();
+	private void setCentersOfMass() {
+		for(CenterOfMass c: myCentersOfMass){
+			c.setCenterOfMass();
 		}
 	}
 
-	private void incrementAmplitudes() {
-    	for(Spring s: mySprings){
-    		if(s instanceof Muscle)
-    			((Muscle) s).incrementAmplitude();
-		}
-	}
-
-	private void updateWallForce() {
-		for(int i=3; i<7; i++){
-			((WallForce) forces[i]).editWall(myWalls[i-3]);
-		}
+	private void applyAllForces() {
+		for(int i=0; i<WorldManager.getWorlds().size(); i++){
+    	for(Body b=WorldManager.getWorld(i).getBodyList(); b!=null; b=b.getNext()){
+    	   applyForces(b);
+    	}
+        WorldManager.getWorld(i).step(1f, 1);
+    	}
 	}
 
 	private void applyForces(Body b) {
@@ -435,16 +428,32 @@ public class Springies extends JGEngine{
 			forces[i].doForce(b);
 		}
 	}
+
 	private void applySpringForce(){
+		for(Spring s: mySprings){
+			if(s instanceof Muscle)
+				((Muscle) s).incrementMuscle();
+			s.applyForce();
+		}
+		if(clickSpring!=null)
+			clickSpring.applyForce();
+	}
+
+	private void incrementAmplitudes() {
+		for(Spring s: mySprings){
+			if(s instanceof Muscle)
+				((Muscle) s).incrementAmplitude();
+		}
+	}
+
+	private void decrementAmplitudes() {
     	for(Spring s: mySprings){
     		if(s instanceof Muscle)
-    			((Muscle) s).incrementMuscle();
-    		s.applyForce();
+    			((Muscle) s).decrementAmplitude();
 		}
-    	if(clickSpring!=null)
-    		clickSpring.applyForce();
-    }
-    @Override
+	}
+
+	@Override
     public void paintFrame ()
     {
     	StringBuilder forceStatus = new StringBuilder();
