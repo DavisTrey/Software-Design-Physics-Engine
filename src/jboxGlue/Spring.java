@@ -26,6 +26,12 @@ public class Spring extends JGObject{
 	public void paint(){
 		if(!isDestroyed){
 		myEngine.setColor(JGColor.white);
+		if(restLength<getLength()){
+			myEngine.setColor(new JGColor((int)Math.max(((restLength-getLength())*2)+255, 0),255, 255));
+		}
+		if(restLength>getLength()){
+			myEngine.setColor(new JGColor(255, (int)Math.max(((getLength()-restLength)*2)+255, 0), 255));
+		}
 		myEngine.drawLine(myMass1.getBody().getPosition().x, myMass1.getBody().getPosition().y,
 				myMass2.getBody().getPosition().x, myMass2.getBody().getPosition().y);
 		}
@@ -56,6 +62,11 @@ public class Spring extends JGObject{
 	}
 	public void destroy(){
 		isDestroyed = true;
+	}
+	public double getLength(){
+		double xVector=myMass1.getBody().m_xf.position.x-myMass2.getBody().m_xf.position.x;
+		double yVector=myMass1.getBody().m_xf.position.y-myMass2.getBody().m_xf.position.y;
+		return Math.pow(Math.pow(xVector, 2)+Math.pow(yVector, 2), .5);
 	}
 }
 
