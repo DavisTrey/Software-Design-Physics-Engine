@@ -25,15 +25,18 @@ public class Spring extends JGObject{
 	}
 	public void paint(){
 		if(!isDestroyed){
+		setColor();
+		myEngine.drawLine(myMass1.getBody().getPosition().x, myMass1.getBody().getPosition().y,
+				myMass2.getBody().getPosition().x, myMass2.getBody().getPosition().y);
+		}
+	}
+	protected void setColor() {
 		myEngine.setColor(JGColor.white);
 		if(restLength<getLength()){
 			myEngine.setColor(new JGColor((int)Math.max(((restLength-getLength())*2)+255, 0),255, 255));
 		}
 		if(restLength>getLength()){
 			myEngine.setColor(new JGColor(255, (int)Math.max(((getLength()-restLength)*2)+255, 0), 255));
-		}
-		myEngine.drawLine(myMass1.getBody().getPosition().x, myMass1.getBody().getPosition().y,
-				myMass2.getBody().getPosition().x, myMass2.getBody().getPosition().y);
 		}
 	}
 	public void applyForce(){

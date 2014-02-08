@@ -9,8 +9,8 @@
     </nodes>
 
     <links>
-        <spring a="m0" b="m1" restlength="150.0" constant="0.05"/>
-        <spring a="m0" b="m2" restlength="100.0" constant="0.05"/>
-        <spring a="m1" b="m2" restlength="100.0" constant="0.05"/>
+        <muscle a="m0" b="m1" restlength="150.0" amplitude="19"/>
+        <muscle a="m0" b="m2" restlength="100.0" amplitude="19"/>
+        <muscle a="m1" b="m2" restlength="100.0" amplitude="19"/>
     </links>
 </model>
