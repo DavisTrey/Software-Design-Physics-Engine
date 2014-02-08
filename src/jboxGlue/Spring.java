@@ -14,6 +14,7 @@ public class Spring extends JGObject{
 	private PhysicalObjectCircle myMass2;
 	protected double restLength;
 	private double springConstant;
+	private boolean isDestroyed;
 	public Spring(PhysicalObjectCircle mass1, PhysicalObjectCircle mass2, double length, double springiness){
 		super("spring", true, 0, 0 ,0, null);
 		restLength=length;
@@ -23,12 +24,14 @@ public class Spring extends JGObject{
 		myEngine = eng;
 	}
 	public void paint(){
+		if(!isDestroyed){
 		myEngine.setColor(JGColor.white);
 		myEngine.drawLine(myMass1.getBody().getPosition().x, myMass1.getBody().getPosition().y,
-				myMass2.getBody().getPosition().x, myMass2.getBody().getPosition().y);;
+				myMass2.getBody().getPosition().x, myMass2.getBody().getPosition().y);
+		}
 	}
 	public void applyForce(){
-
+		if(!isDestroyed){
 		double xVector=myMass1.getBody().m_xf.position.x-myMass2.getBody().m_xf.position.x;
 		double yVector=myMass1.getBody().m_xf.position.y-myMass2.getBody().m_xf.position.y;
 		double magnitude=Math.pow(Math.pow(xVector, 2)+Math.pow(yVector, 2), .5);
@@ -49,7 +52,10 @@ public class Spring extends JGObject{
 			myMass2.getBody().applyForce(vector, myMass2.getBody().m_xf.position);
 
 		}
-		
+		}
+	}
+	public void destroy(){
+		isDestroyed = true;
 	}
 }
 

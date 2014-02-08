@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import XML.*;
 
@@ -54,8 +56,9 @@ public class Springies extends JGEngine{
 	private static final double DEFAULT_CENTEROFMASS_EXPONENT = 2;
 	private static final double[] DEFAULT_WALL_FORCE_EXPONENTS = {2,2,2,2};
 	private static final double DEFAULT_WALL_FORCE_CONSTANT[] = {100000, 100000, 100000, 100000};
-    private HashMap<String, Body> myBodies = new HashMap<String, Body>();
-    private HashSet<Spring> mySprings=new HashSet<Spring>();
+    private Map<Integer, HashMap<String, PhysicalObjectCircle>> myBodies = new HashMap<Integer, HashMap<String, PhysicalObjectCircle>>();
+    private Set<PhysicalObjectCircle> fullBodyList = new HashSet<PhysicalObjectCircle>();
+    private Set<Spring> mySprings=new HashSet<Spring>();
     private List<CenterOfMass> myCentersOfMass = new ArrayList<CenterOfMass>();
     private Wall[] myWalls= new Wall[4];
 	//protected static PhysicalObject[] walls = new PhysicalObject[4];
@@ -197,15 +200,15 @@ public class Springies extends JGEngine{
 		double restLength=Double.parseDouble(rest);
 		double springConstant=Double.parseDouble(K);
 		double amplitude=Double.parseDouble(amp);
-		PhysicalObjectCircle mass1 = (PhysicalObjectCircle) myBodies.get(id1).getUserData();
-		PhysicalObjectCircle mass2 = (PhysicalObjectCircle) myBodies.get(id2).getUserData();
+		PhysicalObjectCircle mass1 = (PhysicalObjectCircle) myBodies.get(assemblyNumber).get(id1);
+		PhysicalObjectCircle mass2 = (PhysicalObjectCircle) myBodies.get(assemblyNumber).get(id2);
 		mySprings.add(new Muscle(mass1, mass2, restLength, springConstant, amplitude));
 	}
 	public void createSpring(String id1, String id2, String rest, String K){
 		double restLength=Double.parseDouble(rest);
 		double springConstant=Double.parseDouble(K);
-		PhysicalObjectCircle mass1 = (PhysicalObjectCircle) myBodies.get(id1).getUserData();
-		PhysicalObjectCircle mass2 = (PhysicalObjectCircle) myBodies.get(id2).getUserData();
+		PhysicalObjectCircle mass1 = (PhysicalObjectCircle) myBodies.get(assemblyNumber).get(id1);
+		PhysicalObjectCircle mass2 = (PhysicalObjectCircle) myBodies.get(assemblyNumber).get(id2);
 		mySprings.add(new Spring(mass1, mass2, restLength, springConstant));
 		
 	}
@@ -215,12 +218,18 @@ public class Springies extends JGEngine{
 		double xVelocity=Double.parseDouble(xveloc);
 		double yVelocity=Double.parseDouble(yveloc);
 		double massValue=Double.parseDouble(mass);
-		myBodies.put(id, new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber).getBody());
+		if(!myBodies.containsKey(assemblyNumber))
+			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
+		myBodies.get(assemblyNumber).put(id, new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber));
+		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
 	}
 	public void createFixed(String id, String xpos, String ypos){
 		double xPosition=Double.parseDouble(xpos);
 		double yPosition=Double.parseDouble(ypos);
-		myBodies.put(id, new FixedMass(id, xPosition, yPosition, assemblyNumber).getBody());
+		if(!myBodies.containsKey(assemblyNumber))
+			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
+		myBodies.get(assemblyNumber).put(id, new FixedMass(id, xPosition, yPosition, assemblyNumber));
+		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
 	
 	}
 	
@@ -345,6 +354,18 @@ public class Springies extends JGEngine{
 	        myCentersOfMass.add(new CenterOfMass(WorldManager.getWorld(assemblyNumber)));
 	        WorldManager.getWorld(assemblyNumber).setGravity(new Vec2(0.0f, 0.0f));
 			XMLMessage();
+		}
+		if(getKey('C')){
+			clearKey('C');
+			for(PhysicalObjectCircle c: fullBodyList){
+				c.destroy();
+			}
+			for(Spring s: mySprings){
+				s.destroy();
+			}
+			System.out.println(myBodies.size());
+			mySprings.clear();
+			myCentersOfMass.clear();
 		}
 	}
 
