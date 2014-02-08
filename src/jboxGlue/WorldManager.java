@@ -18,7 +18,6 @@ public class WorldManager
     public static List<World> ourWorlds = new ArrayList<World>();
     private static List<Vec2> myCentersOfMass = new ArrayList<Vec2>();
     private static HashMap<String, Body> myBodies = new HashMap<String, Body>();
-    private static HashSet<Spring> mySprings=new HashSet<Spring>();
     public static World getWorld(int i)
     {
         // make sure we have a world, just in case...
@@ -45,12 +44,6 @@ public class WorldManager
     
     public static void addBody(String id, Body body){
     	myBodies.put(id, body);
-    }
-    public static HashSet<Spring> getSprings(){
-    	return mySprings;
-    }
-    public static void addSpring(Spring s){
-    	mySprings.add(s);
     }
     
     public static Vec2 getCenterOfMass(int i){

@@ -50,6 +50,7 @@ public class Springies extends JGEngine{
 	private static final double DEFAULT_CENTEROFMASS_EXPONENT = 2;
 	private static final double[] DEFAULT_WALL_FORCE_EXPONENTS = {2,2,2,2};
 	private static final double DEFAULT_WALL_FORCE_CONSTANT[] = {100000, 100000, 100000, 100000};
+    private static HashSet<Spring> mySprings=new HashSet<Spring>();
 	private Vec2 centerOfMass = new Vec2(0,0);
 	protected static PhysicalObject[] walls = new PhysicalObject[4];
 	private int wallModifier = 0;
@@ -191,7 +192,7 @@ public class Springies extends JGEngine{
 	public void createSpring(String id1, String id2, String rest, String K){
 		double restLength=Double.parseDouble(rest);
 		double springConstant=Double.parseDouble(K);
-		new Spring(id1, id2, restLength, springConstant);
+		mySprings.add(new Spring(id1, id2, restLength, springConstant));
 		
 	}
 	public void createMass(String id, String xpos, String ypos, String xveloc, String yveloc, String mass){
@@ -303,15 +304,15 @@ public class Springies extends JGEngine{
 			clearKey(KeyUp);
 			wallModifier+=10;
 			clearWalls();
-			updateWallForce();
 			addWalls();
+			updateWallForce();
 		}
 		if(getKey(KeyDown)){
 			clearKey(KeyDown);
 			wallModifier-=10;
 			clearWalls();
-			updateWallForce();
 			addWalls();
+			updateWallForce();
 		}
 		if(getKey('=')||getKey('+')){
 			clearKey('=');
@@ -332,16 +333,14 @@ public class Springies extends JGEngine{
 	}
 
 	private void decrementAmplitudes() {
-    	HashSet<Spring> springs=WorldManager.getSprings();
-    	for(Spring s: springs){
+    	for(Spring s: mySprings){
     		if(s instanceof Muscle)
     			((Muscle) s).decrementAmplitude();
 		}
 	}
 
 	private void incrementAmplitudes() {
-    	HashSet<Spring> springs=WorldManager.getSprings();
-    	for(Spring s: springs){
+    	for(Spring s: mySprings){
     		if(s instanceof Muscle)
     			((Muscle) s).incrementAmplitude();
 		}
@@ -359,8 +358,7 @@ public class Springies extends JGEngine{
 		}
 	}
 	private void applySpringForce(){
-    	HashSet<Spring> springs=WorldManager.getSprings();
-    	for(Spring s: springs){
+    	for(Spring s: mySprings){
     		if(s instanceof Muscle)
     			((Muscle) s).incrementMuscle();
     		s.applyForce();

@@ -21,7 +21,6 @@ public class Spring extends JGObject{
 		myMass1 = (PhysicalObjectCircle) WorldManager.getBodies().get(massid1).getUserData();
 		myMass2 = (PhysicalObjectCircle) WorldManager.getBodies().get(massid2).getUserData();
 		myEngine = eng;
-		WorldManager.addSpring(this);
 	}
 	public void paint(){
 		myEngine.setColor(JGColor.white);
@@ -34,7 +33,6 @@ public class Spring extends JGObject{
 		double yVector=myMass1.getBody().m_xf.position.y-myMass2.getBody().m_xf.position.y;
 		double magnitude=Math.pow(Math.pow(xVector, 2)+Math.pow(yVector, 2), .5);
 		double displacement=magnitude-restLength;
-		//System.out.println(displacement);
 		double Force=springConstant*displacement;
 		
 		double normalizedX=xVector/magnitude;
