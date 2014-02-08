@@ -66,6 +66,7 @@ public class Springies extends JGEngine{
 	//protected static PhysicalObject[] walls = new PhysicalObject[4];
 	private int wallModifier = 0;
 	protected int assemblyNumber = 0;
+	private int massRadius = 4;
 	private boolean clickOn;
 	private Mass clickMass;
 	private Mass targetMass;
@@ -230,7 +231,7 @@ public class Springies extends JGEngine{
 		double massValue=Double.parseDouble(mass);
 		if(!myBodies.containsKey(assemblyNumber))
 			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
-		myBodies.get(assemblyNumber).put(id, new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber));
+		myBodies.get(assemblyNumber).put(id, new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber, massRadius));
 		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
 	}
 	public void createFixed(String id, String xpos, String ypos){
@@ -238,11 +239,22 @@ public class Springies extends JGEngine{
 		double yPosition=Double.parseDouble(ypos);
 		if(!myBodies.containsKey(assemblyNumber))
 			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
-		myBodies.get(assemblyNumber).put(id, new FixedMass(id, xPosition, yPosition, assemblyNumber));
+		myBodies.get(assemblyNumber).put(id, new FixedMass(id, xPosition, yPosition, assemblyNumber, massRadius));
 		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
 	
 	}
 	
+
+	// addWalls must be called before this method is called!!!
+	private void addForces() {
+		forces[0] = new GravityForce(DEFAULT_GRAVITY, 90);
+		forces[1] = new ViscosityForce(DEFAULT_VISCOSITY);
+		forces[2] = new CenterOfMassForce(DEFAULT_CENTEROFMASS_FORCE_CONSTANT, DEFAULT_CENTEROFMASS_EXPONENT, myCentersOfMass);
+		forces[3] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[0], DEFAULT_WALL_FORCE_EXPONENTS[0],0,myWalls[0]);
+		forces[4] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[1], DEFAULT_WALL_FORCE_EXPONENTS[1],1,myWalls[1]);
+		forces[5] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[2], DEFAULT_WALL_FORCE_EXPONENTS[2],2,myWalls[2]);
+		forces[6] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[3], DEFAULT_WALL_FORCE_EXPONENTS[3],3,myWalls[3]);
+	}
 
 	private void addWalls ()
     {
@@ -268,20 +280,15 @@ public class Springies extends JGEngine{
         }
     }
 
-    // addWalls must be called before this method is called!!!
-	private void addForces() {
-		forces[0] = new GravityForce(DEFAULT_GRAVITY, 90);
-		forces[1] = new ViscosityForce(DEFAULT_VISCOSITY);
-		forces[2] = new CenterOfMassForce(DEFAULT_CENTEROFMASS_FORCE_CONSTANT, DEFAULT_CENTEROFMASS_EXPONENT, myCentersOfMass);
-		forces[3] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[0], DEFAULT_WALL_FORCE_EXPONENTS[0],0,myWalls[0]);
-		forces[4] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[1], DEFAULT_WALL_FORCE_EXPONENTS[1],1,myWalls[1]);
-		forces[5] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[2], DEFAULT_WALL_FORCE_EXPONENTS[2],2,myWalls[2]);
-		forces[6] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[3], DEFAULT_WALL_FORCE_EXPONENTS[3],3,myWalls[3]);
-	}
-	
-	private void clearWalls(){
+    private void clearWalls(){
 		for(Wall w: myWalls){
 			w.destroy();
+		}
+	}
+
+	private void updateWallForce() {
+		for(int i=3; i<7; i++){
+			((WallForce) forces[i]).editWall(myWalls[i-3]);
 		}
 	}
 
@@ -290,16 +297,8 @@ public class Springies extends JGEngine{
     {
 		checkKeyInput();
 		checkMouseInput();
-        // update game objects
-		for(CenterOfMass c: myCentersOfMass){
-			c.setCenterOfMass();
-		}
-    	for(int i=0; i<WorldManager.getWorlds().size(); i++){
-    	for(Body b=WorldManager.getWorld(i).getBodyList(); b!=null; b=b.getNext()){
-    	   applyForces(b);
-    	}
-        WorldManager.getWorld(i).step(1f, 1);
-    	}
+		setCentersOfMass();
+    	applyAllForces();
     	applySpringForce();
         moveObjects();
         checkCollision(2, 1);
@@ -396,7 +395,7 @@ public class Springies extends JGEngine{
 					}
 				}
 				clickOn = true;
-				clickMass = new Mass("-1", (double)getMouseX(), getMouseY(), (double)0, (double)0, (double).1, targetMass.getWorldID());
+				clickMass = new Mass("-1", (double)getMouseX(), getMouseY(), (double)0, (double)0, (double).1, targetMass.getWorldID(), massRadius);
 				clickSpring = new Spring(clickMass, targetMass, 
 						Math.pow(Math.pow(targetMass.getBody().m_xf.position.x-getMouseX(), 2)+Math.pow(targetMass.getBody().m_xf.position.y-getMouseY(), 2), .5), 2);
 			}
@@ -415,6 +414,7 @@ public class Springies extends JGEngine{
 		}
 	}
 
+
 	private void decrementAmplitudes() {
     	for(Spring s: mySprings){
     		if(s instanceof Muscle)
@@ -426,13 +426,22 @@ public class Springies extends JGEngine{
     	for(Spring s: mySprings){
     		if(s instanceof Muscle)
     			((Muscle) s).incrementAmplitude(muscleAmplitudeIncrement);
+    	}
+	}
+	private void setCentersOfMass() {
+		for(CenterOfMass c: myCentersOfMass){
+			c.setCenterOfMass();
+
 		}
 	}
 
-	private void updateWallForce() {
-		for(int i=3; i<7; i++){
-			((WallForce) forces[i]).editWall(myWalls[i-3]);
-		}
+	private void applyAllForces() {
+		for(int i=0; i<WorldManager.getWorlds().size(); i++){
+    	for(Body b=WorldManager.getWorld(i).getBodyList(); b!=null; b=b.getNext()){
+    	   applyForces(b);
+    	}
+        WorldManager.getWorld(i).step(1f, 1);
+    	}
 	}
 
 	private void applyForces(Body b) {
@@ -440,16 +449,19 @@ public class Springies extends JGEngine{
 			forces[i].doForce(b);
 		}
 	}
+
 	private void applySpringForce(){
-    	for(Spring s: mySprings){
-    		if(s instanceof Muscle)
-    			((Muscle) s).incrementMuscle();
-    		s.applyForce();
+		for(Spring s: mySprings){
+			if(s instanceof Muscle)
+				((Muscle) s).incrementMuscle();
+			s.applyForce();
 		}
-    	if(clickSpring!=null)
-    		clickSpring.applyForce();
-    }
-    @Override
+		if(clickSpring!=null)
+			clickSpring.applyForce();
+	}
+
+
+	@Override
     public void paintFrame ()
     {
     	StringBuilder forceStatus = new StringBuilder();
