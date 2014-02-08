@@ -132,11 +132,10 @@ public abstract class PhysicalObject extends JGObject
     public void destroy ()
     {
     	isDestroyed = true;
-        // body may not be in actual world. If not, do not call destroyBody.
-        if (myBody.m_world == WorldManager.getWorld(worldID)) {
-            // also destroys associated joints
-            WorldManager.getWorld(worldID).destroyBody(myBody);
-        }
+    	// This moves the body very far away from the play area because destroyBody totally doesn't do what it says it does
+    	// so this is how I'm dealing with it.
+    	myBody.setXForm(new Vec2((float)10000, (float)10000), -myRotation);
+    	myBody.getWorld().destroyBody(myBody);
     }
 
     @Override
