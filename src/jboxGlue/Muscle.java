@@ -32,10 +32,10 @@ public class Muscle extends Spring{
 		restLength=(originalLength+myAmplitude*Math.sin(myTime));
 	}
 	
-	public void incrementAmplitude(){
-		myAmplitude+=10;
+	public void incrementAmplitude(double increment){
+		myAmplitude+=increment;
 	}
-	public void decrementAmplitude(){
-		myAmplitude-=10;
+	public void decrementAmplitude(double increment){
+		myAmplitude-=increment;
 	}
 }

@@ -46,6 +46,8 @@ import org.w3c.dom.NodeList;
 
 
 public class Springies extends JGEngine{
+	private double muscleAmplitudeIncrement=10;
+	private double wallIncrement=10;
 	protected static final String DEFAULT_VELOCITY="0";
 	protected static final String DEFAULT_MASS="1";
 	protected static final String DEFAULT_REST="150";
@@ -188,6 +190,10 @@ public class Springies extends JGEngine{
     }
     public void alterViscosity(String magnitude){
     	forces[1] = new ViscosityForce(Double.parseDouble(magnitude));
+    }
+    public void alterMusclePreferences(String frequency, String ampIncrement){
+    	muscleAmplitudeIncrement=Double.parseDouble(ampIncrement);
+    	
     }
     public void alterCenterMass(String magnitude, String exponent){
     	forces[2] = new CenterOfMassForce(Double.parseDouble(magnitude),Double.parseDouble(exponent), myCentersOfMass);
@@ -338,7 +344,7 @@ public class Springies extends JGEngine{
 		}
 		if(getKey(KeyDown)){
 			clearKey(KeyDown);
-			wallModifier-=10;
+			wallModifier-=wallIncrement;
 			clearWalls();
 			addWalls();
 			updateWallForce();
@@ -376,7 +382,7 @@ public class Springies extends JGEngine{
 
 	private void checkMouseInput() {
 		if(getMouseButton(1)){
-			if(clickOn==false&&!fullBodyList.isEmpty()){
+			if(!clickOn&&!fullBodyList.isEmpty()){
 				for(PhysicalObjectCircle p : fullBodyList){
 					if(p instanceof Mass){
 					if(targetMass==null){
@@ -412,14 +418,14 @@ public class Springies extends JGEngine{
 	private void decrementAmplitudes() {
     	for(Spring s: mySprings){
     		if(s instanceof Muscle)
-    			((Muscle) s).decrementAmplitude();
+    			((Muscle) s).decrementAmplitude(muscleAmplitudeIncrement);
 		}
 	}
 
 	private void incrementAmplitudes() {
     	for(Spring s: mySprings){
     		if(s instanceof Muscle)
-    			((Muscle) s).incrementAmplitude();
+    			((Muscle) s).incrementAmplitude(muscleAmplitudeIncrement);
 		}
 	}
 

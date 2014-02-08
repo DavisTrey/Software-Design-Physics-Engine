@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="lib/jgame-jbox2d.jar" sourcepath="lib/jbox2d-src.zip">
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry exported="true" kind="lib" path="lib/jgame-jbox2d.jar" sourcepath="lib/jbox2d-src.zip">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/springies/lib/jbox2d-javadoc.jar!/javadoc"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/jgame-jre.jar" sourcepath="lib/jgame-src.jar">
+	<classpathentry exported="true" kind="lib" path="lib/jgame-jre.jar" sourcepath="lib/jgame-src.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/springies/lib/jgame-javadoc.jar!/javadoc"/>
 		</attributes>
