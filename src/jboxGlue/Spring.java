@@ -14,12 +14,12 @@ public class Spring extends JGObject{
 	private PhysicalObjectCircle myMass2;
 	protected double restLength;
 	private double springConstant;
-	public Spring(String massid1, String massid2, double length, double springiness){
+	public Spring(PhysicalObjectCircle mass1, PhysicalObjectCircle mass2, double length, double springiness){
 		super("spring", true, 0, 0 ,0, null);
 		restLength=length;
 		springConstant=springiness;
-		myMass1 = (PhysicalObjectCircle) WorldManager.getBodies().get(massid1).getUserData();
-		myMass2 = (PhysicalObjectCircle) WorldManager.getBodies().get(massid2).getUserData();
+		myMass1 = mass1;
+		myMass2 = mass2;
 		myEngine = eng;
 	}
 	public void paint(){

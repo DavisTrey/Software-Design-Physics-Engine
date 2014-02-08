@@ -3,8 +3,10 @@ package springies;
 import java.awt.Frame;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
 import XML.*;
 
 import javax.swing.JFileChooser;
@@ -50,6 +52,7 @@ public class Springies extends JGEngine{
 	private static final double DEFAULT_CENTEROFMASS_EXPONENT = 2;
 	private static final double[] DEFAULT_WALL_FORCE_EXPONENTS = {2,2,2,2};
 	private static final double DEFAULT_WALL_FORCE_CONSTANT[] = {100000, 100000, 100000, 100000};
+    private static HashMap<String, Body> myBodies = new HashMap<String, Body>();
     private static HashSet<Spring> mySprings=new HashSet<Spring>();
 	private Vec2 centerOfMass = new Vec2(0,0);
 	protected static PhysicalObject[] walls = new PhysicalObject[4];
@@ -187,12 +190,16 @@ public class Springies extends JGEngine{
 		double restLength=Double.parseDouble(rest);
 		double springConstant=Double.parseDouble(K);
 		double amplitude=Double.parseDouble(amp);
-		new Muscle(id1, id2, restLength, springConstant, amplitude);
+		PhysicalObjectCircle mass1 = (PhysicalObjectCircle) myBodies.get(id1).getUserData();
+		PhysicalObjectCircle mass2 = (PhysicalObjectCircle) myBodies.get(id2).getUserData();
+		mySprings.add(new Muscle(mass1, mass2, restLength, springConstant, amplitude));
 	}
 	public void createSpring(String id1, String id2, String rest, String K){
 		double restLength=Double.parseDouble(rest);
 		double springConstant=Double.parseDouble(K);
-		mySprings.add(new Spring(id1, id2, restLength, springConstant));
+		PhysicalObjectCircle mass1 = (PhysicalObjectCircle) myBodies.get(id1).getUserData();
+		PhysicalObjectCircle mass2 = (PhysicalObjectCircle) myBodies.get(id2).getUserData();
+		mySprings.add(new Spring(mass1, mass2, restLength, springConstant));
 		
 	}
 	public void createMass(String id, String xpos, String ypos, String xveloc, String yveloc, String mass){
@@ -201,12 +208,12 @@ public class Springies extends JGEngine{
 		double xVelocity=Double.parseDouble(xveloc);
 		double yVelocity=Double.parseDouble(yveloc);
 		double massValue=Double.parseDouble(mass);
-		new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber);
+		myBodies.put(id, new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber).getBody());
 	}
 	public void createFixed(String id, String xpos, String ypos){
 		double xPosition=Double.parseDouble(xpos);
 		double yPosition=Double.parseDouble(ypos);
-		new FixedMass(id, xPosition, yPosition, assemblyNumber);
+		myBodies.put(id, new FixedMass(id, xPosition, yPosition, assemblyNumber).getBody());
 	
 	}
 	
