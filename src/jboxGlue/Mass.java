@@ -6,9 +6,8 @@ import jgame.JGColor;
 import jgame.JGObject;
 
 public class Mass extends PhysicalObjectCircle {
-	private static final double DEFAULT_RADIUS = 4;
-	public Mass(String id, double x, double y, double xvelo, double yvelo, double mass, int world){
-		super(id, 1, JGColor.white, DEFAULT_RADIUS, mass, world);
+	public Mass(String id, double x, double y, double xvelo, double yvelo, double mass, int world, int radius){
+		super(id, 1, JGColor.white, radius, mass, world);
 		this.setPos(x, y);
 		this.setVelo(xvelo, yvelo);
 	}

@@ -64,6 +64,7 @@ public class Springies extends JGEngine{
 	//protected static PhysicalObject[] walls = new PhysicalObject[4];
 	private int wallModifier = 0;
 	protected int assemblyNumber = 0;
+	private int massRadius = 4;
 	private boolean clickOn;
 	private Mass clickMass;
 	private Mass targetMass;
@@ -224,7 +225,7 @@ public class Springies extends JGEngine{
 		double massValue=Double.parseDouble(mass);
 		if(!myBodies.containsKey(assemblyNumber))
 			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
-		myBodies.get(assemblyNumber).put(id, new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber));
+		myBodies.get(assemblyNumber).put(id, new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber, massRadius));
 		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
 	}
 	public void createFixed(String id, String xpos, String ypos){
@@ -232,7 +233,7 @@ public class Springies extends JGEngine{
 		double yPosition=Double.parseDouble(ypos);
 		if(!myBodies.containsKey(assemblyNumber))
 			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
-		myBodies.get(assemblyNumber).put(id, new FixedMass(id, xPosition, yPosition, assemblyNumber));
+		myBodies.get(assemblyNumber).put(id, new FixedMass(id, xPosition, yPosition, assemblyNumber, massRadius));
 		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
 	
 	}
@@ -390,7 +391,7 @@ public class Springies extends JGEngine{
 					}
 				}
 				clickOn = true;
-				clickMass = new Mass("-1", (double)getMouseX(), getMouseY(), (double)0, (double)0, (double).1, targetMass.getWorldID());
+				clickMass = new Mass("-1", (double)getMouseX(), getMouseY(), (double)0, (double)0, (double).1, targetMass.getWorldID(), massRadius);
 				clickSpring = new Spring(clickMass, targetMass, 
 						Math.pow(Math.pow(targetMass.getBody().m_xf.position.x-getMouseX(), 2)+Math.pow(targetMass.getBody().m_xf.position.y-getMouseY(), 2), .5), 2);
 			}

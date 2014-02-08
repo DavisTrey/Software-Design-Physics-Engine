@@ -7,11 +7,10 @@ import jboxGlue.PhysicalObjectCircle;
 
 public class FixedMass extends PhysicalObjectCircle {
 	private static final double DEFAULT_MASS = 1;
-	private static final double DEFAULT_RADIUS = 4;
 	private double myX;
 	private double myY;
-	public FixedMass(String id, double x, double y, int world){
-		super(id, 1, JGColor.red, DEFAULT_RADIUS, DEFAULT_MASS, world);
+	public FixedMass(String id, double x, double y, int world, int radius){
+		super(id, 1, JGColor.red, radius, DEFAULT_MASS, world);
 		myX = x;
 		myY = y;
 		this.setPos(x, y);
