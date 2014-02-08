@@ -66,7 +66,6 @@ public class Springies extends JGEngine{
 	//protected static PhysicalObject[] walls = new PhysicalObject[4];
 	private int wallModifier = 0;
 	protected int assemblyNumber = 0;
-	private int massRadius = 4;
 	private boolean clickOn;
 	private Mass clickMass;
 	private Mass targetMass;
@@ -74,7 +73,15 @@ public class Springies extends JGEngine{
 	// Forces are indexed as follows: 0=gravity, 1=viscosity, 2=centerofmass, 3=top wall, 4=right wall, 5=bottom wall, 6=left wall
 	protected static Force[] forces = new Force[7];
 	
-	
+	public Set<Spring> returnSprings(){
+		return mySprings;
+	}
+	public Set<PhysicalObjectCircle> returnFullBodyList(){
+		return fullBodyList;
+	}
+	public Map<Integer, HashMap<String, PhysicalObjectCircle>> returnBodyMap(){
+		return myBodies;
+	}
     public Springies (){
 
         // set the window size
@@ -112,10 +119,31 @@ public class Springies extends JGEngine{
         }
         addWalls();
         addForces();
+        XMLPreferences();
         XMLMessage();
         
     }
-  
+    public void XMLPreferences(){
+    	Frame message=new Frame();
+    	Object[] options={"Yes", "No"};
+    	int n=JOptionPane.showOptionDialog(message, "Would you like to loead a preference file?", "XML Loading", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+    	if(n==0){
+    		File dataFile=fileRetriever();
+    		readPreferences(dataFile);
+    	}
+    	
+    }
+    public void readPreferences(File datafile){
+    	try {
+    		Document doc=DocumentBuilder(datafile);
+    		new MusclePreferenceReader().readNodes("muscle", doc, this);
+
+
+    	} catch (Exception ex) {
+    		ex.printStackTrace();
+    	}
+    }
+
     public void XMLMessage(){
 		try {
 			Frame message=new Frame();
@@ -192,10 +220,6 @@ public class Springies extends JGEngine{
     public void alterViscosity(String magnitude){
     	forces[1] = new ViscosityForce(Double.parseDouble(magnitude));
     }
-    public void alterMusclePreferences(String frequency, String ampIncrement){
-    	muscleAmplitudeIncrement=Double.parseDouble(ampIncrement);
-    	
-    }
     public void alterCenterMass(String magnitude, String exponent){
     	forces[2] = new CenterOfMassForce(Double.parseDouble(magnitude),Double.parseDouble(exponent), myCentersOfMass);
     }
@@ -231,7 +255,7 @@ public class Springies extends JGEngine{
 		double massValue=Double.parseDouble(mass);
 		if(!myBodies.containsKey(assemblyNumber))
 			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
-		myBodies.get(assemblyNumber).put(id, new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber, massRadius));
+		myBodies.get(assemblyNumber).put(id, new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber));
 		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
 	}
 	public void createFixed(String id, String xpos, String ypos){
@@ -239,7 +263,7 @@ public class Springies extends JGEngine{
 		double yPosition=Double.parseDouble(ypos);
 		if(!myBodies.containsKey(assemblyNumber))
 			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
-		myBodies.get(assemblyNumber).put(id, new FixedMass(id, xPosition, yPosition, assemblyNumber, massRadius));
+		myBodies.get(assemblyNumber).put(id, new FixedMass(id, xPosition, yPosition, assemblyNumber));
 		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
 	
 	}
@@ -395,7 +419,7 @@ public class Springies extends JGEngine{
 					}
 				}
 				clickOn = true;
-				clickMass = new Mass("-1", (double)getMouseX(), getMouseY(), (double)0, (double)0, (double).1, targetMass.getWorldID(), massRadius);
+				clickMass = new Mass("-1", (double)getMouseX(), getMouseY(), (double)0, (double)0, (double).1, targetMass.getWorldID());
 				clickSpring = new Spring(clickMass, targetMass, 
 						Math.pow(Math.pow(targetMass.getBody().m_xf.position.x-getMouseX(), 2)+Math.pow(targetMass.getBody().m_xf.position.y-getMouseY(), 2), .5), 2);
 			}
@@ -418,14 +442,14 @@ public class Springies extends JGEngine{
 	private void decrementAmplitudes() {
     	for(Spring s: mySprings){
     		if(s instanceof Muscle)
-    			((Muscle) s).decrementAmplitude(muscleAmplitudeIncrement);
+    			((Muscle) s).decrementAmplitude();
 		}
 	}
 
 	private void incrementAmplitudes() {
     	for(Spring s: mySprings){
     		if(s instanceof Muscle)
-    			((Muscle) s).incrementAmplitude(muscleAmplitudeIncrement);
+    			((Muscle) s).incrementAmplitude();
     	}
 	}
 	private void setCentersOfMass() {

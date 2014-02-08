@@ -6,6 +6,8 @@ public class Muscle extends Spring{
 	
 	private double originalLength;
 	private double myAmplitude;
+	private static double myFrequency=1;
+	private static double myAmpIncrement=10;
 	private double myTime;
 	private static final double MUSCLE_INCREMENTATION_CONSTANT= .05;
 	public Muscle(PhysicalObjectCircle mass1, PhysicalObjectCircle mass2, double length,
@@ -29,13 +31,14 @@ public class Muscle extends Spring{
 	}
 	public void incrementMuscle(){
 		myTime=myTime+=MUSCLE_INCREMENTATION_CONSTANT;
-		restLength=(originalLength+myAmplitude*Math.sin(myTime));
+		restLength=(originalLength+myAmplitude*Math.sin(myFrequency*myTime));
 	}
 	
-	public void incrementAmplitude(double increment){
-		myAmplitude+=increment;
+	public void incrementAmplitude(){
+		myAmplitude+=myAmpIncrement;
 	}
-	public void decrementAmplitude(double increment){
-		myAmplitude-=increment;
+	public void decrementAmplitude(){
+		myAmplitude-=myAmpIncrement;
 	}
+	
 }
