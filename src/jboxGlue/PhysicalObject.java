@@ -25,6 +25,7 @@ public abstract class PhysicalObject extends JGObject
         isDestroyed = false;
         worldID = world;
 		JGColor myColor = JGColor.white;
+		if(this instanceof PhysicalObjectCircle){
 		if(world%8==1)
 			myColor = JGColor.red;
 		if(world%8==2)
@@ -39,6 +40,7 @@ public abstract class PhysicalObject extends JGObject
 			myColor = JGColor.gray;
 		if(world%8==7)
 			myColor = JGColor.blue;
+		}
         init(myColor, false);
     }
 
