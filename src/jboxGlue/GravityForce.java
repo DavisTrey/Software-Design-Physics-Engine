@@ -12,8 +12,6 @@ public class GravityForce extends Force{
 		myForce = new Vec2((float)(magnitude*Math.cos(direction*3.14/180)),(float)(magnitude*Math.sin(direction*3.14/180)));
 	}
 	public void applyForce(Body b) {
-		if(isOn){
-			b.applyForce(myForce, b.m_xf.position);
-		}
+		b.applyForce(myForce, b.m_xf.position);
 	}
 }

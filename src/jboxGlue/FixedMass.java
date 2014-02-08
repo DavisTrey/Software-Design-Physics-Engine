@@ -15,7 +15,6 @@ public class FixedMass extends PhysicalObjectCircle {
 		myX = x;
 		myY = y;
 		this.setPos(x, y);
-		//WorldManager.addBody(id, this.getBody());
 	}
     public void move ()
     {

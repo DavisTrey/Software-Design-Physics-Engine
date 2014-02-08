@@ -11,7 +11,6 @@ public class Mass extends PhysicalObjectCircle {
 		super(id, 1, JGColor.white, DEFAULT_RADIUS, mass, world);
 		this.setPos(x, y);
 		this.setVelo(xvelo, yvelo);
-		//WorldManager.addBody(id, this.getBody());
 	}
 	
 	public void setVelo(double x, double y){

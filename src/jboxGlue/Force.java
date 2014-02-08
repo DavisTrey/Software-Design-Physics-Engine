@@ -15,5 +15,10 @@ public abstract class Force {
 	public boolean isOn(){
 		return isOn;
 	}
+	public void doForce(Body b){
+		if(isOn){
+			applyForce(b);
+		}
+	}
 	public abstract void applyForce(Body b);
 }

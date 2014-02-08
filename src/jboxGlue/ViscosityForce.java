@@ -10,10 +10,8 @@ public class ViscosityForce extends Force{
 	}
 
 	public void applyForce(Body b) {
-		if(isOn){
-		b.applyForce(new Vec2((float)magnitude*-1*b.getLinearVelocity().x,
-				(float)magnitude*-1*b.getLinearVelocity().y), b.m_xf.position);
-		}
+	b.applyForce(new Vec2((float)magnitude*-1*b.getLinearVelocity().x,
+			(float)magnitude*-1*b.getLinearVelocity().y), b.m_xf.position);
 	}
 
 }

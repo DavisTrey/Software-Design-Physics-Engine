@@ -15,6 +15,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import jboxGlue.CenterOfMass;
 import jboxGlue.CenterOfMassForce;
 import jboxGlue.FixedMass;
 import jboxGlue.Force;
@@ -48,13 +49,13 @@ public class Springies extends JGEngine{
 	protected static final String DEFAULT_SPRINGCONSTANT="1";
 	private static final double DEFAULT_GRAVITY = 20;
 	private static final double DEFAULT_VISCOSITY = 2;
-	private static final double DEFAULT_CENTEROFMASS_FORCE_CONSTANT = 200;
+	private static final double DEFAULT_CENTEROFMASS_FORCE_CONSTANT = 20;
 	private static final double DEFAULT_CENTEROFMASS_EXPONENT = 2;
 	private static final double[] DEFAULT_WALL_FORCE_EXPONENTS = {2,2,2,2};
 	private static final double DEFAULT_WALL_FORCE_CONSTANT[] = {100000, 100000, 100000, 100000};
     private static HashMap<String, Body> myBodies = new HashMap<String, Body>();
     private static HashSet<Spring> mySprings=new HashSet<Spring>();
-	private Vec2 centerOfMass = new Vec2(0,0);
+    private static List<CenterOfMass> myCentersOfMass = new ArrayList<CenterOfMass>();
 	protected static PhysicalObject[] walls = new PhysicalObject[4];
 	private int wallModifier = 0;
 	protected int assemblyNumber = 0;
@@ -65,7 +66,7 @@ public class Springies extends JGEngine{
     public Springies (){
 
         // set the window size
-        int height = 480;
+        int height = 700;
         double aspect = 16.0 / 9.0;
         initEngineComponent((int) (height * aspect), height);
     }
@@ -93,6 +94,7 @@ public class Springies extends JGEngine{
         // so set all directions (e.g., forces, velocities) in world coords
         WorldManager.initWorld(this);
         WorldManager.getWorld(0).setGravity(new Vec2(0.0f, 0.0f));
+        myCentersOfMass.add(new CenterOfMass(WorldManager.getWorld(0)));
         addWalls();
         addForces();
         XMLMessage();
@@ -176,7 +178,7 @@ public class Springies extends JGEngine{
     	forces[1] = new ViscosityForce(Double.parseDouble(magnitude));
     }
     public void alterCenterMass(String magnitude, String exponent){
-    	forces[2] = new CenterOfMassForce(Double.parseDouble(magnitude),Double.parseDouble(exponent));
+    	forces[2] = new CenterOfMassForce(Double.parseDouble(magnitude),Double.parseDouble(exponent), myCentersOfMass);
     }
     
     public void alterWall(String id, String magnitude, String exponent){
@@ -246,7 +248,7 @@ public class Springies extends JGEngine{
 	private void addForces() {
 		forces[0] = new GravityForce(DEFAULT_GRAVITY, 90);
 		forces[1] = new ViscosityForce(DEFAULT_VISCOSITY);
-		forces[2] = new CenterOfMassForce(DEFAULT_CENTEROFMASS_FORCE_CONSTANT, DEFAULT_CENTEROFMASS_EXPONENT);
+		forces[2] = new CenterOfMassForce(DEFAULT_CENTEROFMASS_FORCE_CONSTANT, DEFAULT_CENTEROFMASS_EXPONENT, myCentersOfMass);
 		forces[3] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[0], DEFAULT_WALL_FORCE_EXPONENTS[0],0,walls[0]);
 		forces[4] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[1], DEFAULT_WALL_FORCE_EXPONENTS[1],1,walls[1]);
 		forces[5] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[2], DEFAULT_WALL_FORCE_EXPONENTS[2],2,walls[2]);
@@ -264,11 +266,12 @@ public class Springies extends JGEngine{
     {
 		checkKeyInput();
         // update game objects
-    	setCenterOfMass();
+		for(CenterOfMass c: myCentersOfMass){
+			c.setCenterOfMass();
+		}
     	for(int i=0; i<WorldManager.getWorlds().size(); i++){
     	for(Body b=WorldManager.getWorld(i).getBodyList(); b!=null; b=b.getNext()){
     	   applyForces(b);
-    	   ((CenterOfMassForce)forces[2]).applyForce(b,i);
     	}
         WorldManager.getWorld(i).step(1f, 1);
     	}
@@ -334,6 +337,7 @@ public class Springies extends JGEngine{
 			clearKey('N');
 			assemblyNumber++;
 	        WorldManager.initWorld(this);
+	        myCentersOfMass.add(new CenterOfMass(WorldManager.getWorld(assemblyNumber)));
 	        WorldManager.getWorld(assemblyNumber).setGravity(new Vec2(0.0f, 0.0f));
 			XMLMessage();
 		}
@@ -361,7 +365,7 @@ public class Springies extends JGEngine{
 
 	private void applyForces(Body b) {
 		for(int i=0; i<7; i++){
-			forces[i].applyForce(b);
+			forces[i].doForce(b);
 		}
 	}
 	private void applySpringForce(){
@@ -371,21 +375,6 @@ public class Springies extends JGEngine{
     		s.applyForce();
 		}
     }
-
-	private void setCenterOfMass() {
-    	double initx = 0;
-    	double inity = 0;
-    	double totalmass = 0;
-    	for(int i=0; i<WorldManager.getWorlds().size(); i++){
-    	for(Body b=WorldManager.getWorld(i).getBodyList(); b!=null; b=b.getNext()){
-    		initx+=(b.m_xf.position.x)*(b.getMass());
-    		inity+=(b.m_xf.position.y)*(b.getMass());
-    		totalmass+=b.getMass();
-    	}
-    	WorldManager.setCenterOfMass(new Vec2((float)(initx/totalmass),(float)(inity/totalmass)),i);
-    	}
-	}
-
     @Override
     public void paintFrame ()
     {
