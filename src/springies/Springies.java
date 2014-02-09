@@ -387,6 +387,8 @@ public class Springies extends JGEngine{
 	        WorldManager.initWorld(this);
 	        myCentersOfMass.add(new CenterOfMass(WorldManager.getWorld(assemblyNumber)));
 	        WorldManager.getWorld(assemblyNumber).setGravity(new Vec2(0.0f, 0.0f));
+			clearWalls();
+	        addWalls();
 			XMLMessage();
 		}
 		if(getKey('C')){
