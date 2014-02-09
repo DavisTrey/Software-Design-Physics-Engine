@@ -32,7 +32,7 @@ public class WorldManager
 
     public static void initWorld (JGEngine engine)
     {
-        AABB worldBounds = new AABB(new Vec2(0, 0),
+        AABB worldBounds = new AABB(new Vec2(-MAX_WIDTH, -MAX_HEIGHT),
                                     new Vec2(MAX_WIDTH, MAX_HEIGHT));
         Vec2 gravity = new Vec2(0.0f, 0.0f);
         ourWorlds.add(new World(worldBounds, gravity, true));

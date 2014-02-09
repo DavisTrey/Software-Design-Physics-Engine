@@ -286,21 +286,21 @@ public class Springies extends JGEngine{
         // NOTE: immovable objects must have no mass
         final double WALL_MARGIN = 10;
         final double WALL_THICKNESS = 10;
-        final double WALL_WIDTH = displayWidth() + wallModifier - WALL_MARGIN * 2 + WALL_THICKNESS;
-        final double WALL_HEIGHT = displayHeight() + wallModifier - WALL_MARGIN * 2 + WALL_THICKNESS;
+        final double WALL_WIDTH = displayWidth() + 2*wallModifier - WALL_MARGIN * 2 + WALL_THICKNESS;
+        final double WALL_HEIGHT = displayHeight() + 2*wallModifier - WALL_MARGIN * 2 + WALL_THICKNESS;
         for(int i=0; i<WorldManager.getWorlds().size(); i++){
         myWalls[0].addWall(new PhysicalObjectRect("wall", 2, JGColor.green,
                                                      WALL_WIDTH, WALL_THICKNESS, i));
-        myWalls[0].setPos((displayWidth() + wallModifier) / 2, WALL_MARGIN);
+        myWalls[0].setPos((displayWidth()) / 2, WALL_MARGIN - wallModifier);
         myWalls[2].addWall(new PhysicalObjectRect("wall", 2, JGColor.green,
                                       WALL_WIDTH, WALL_THICKNESS, i));
-        myWalls[2].setPos((displayWidth() + wallModifier) / 2, displayHeight() + wallModifier - WALL_MARGIN);
+        myWalls[2].setPos((displayWidth()) / 2, displayHeight() + wallModifier - WALL_MARGIN);
         myWalls[3].addWall(new PhysicalObjectRect("wall", 2, JGColor.green,
                                       WALL_THICKNESS, WALL_HEIGHT, i));
-        myWalls[3].setPos(WALL_MARGIN, (displayHeight() + wallModifier) / 2);
+        myWalls[3].setPos(WALL_MARGIN - wallModifier, (displayHeight()) / 2);
         myWalls[1].addWall(new PhysicalObjectRect("wall", 2, JGColor.green,
                                       WALL_THICKNESS, WALL_HEIGHT, i));
-        myWalls[1].setPos(displayWidth() + wallModifier - WALL_MARGIN, (displayHeight() + wallModifier) / 2);
+        myWalls[1].setPos(displayWidth() + wallModifier - WALL_MARGIN, (displayHeight()) / 2);
         }
     }
 
