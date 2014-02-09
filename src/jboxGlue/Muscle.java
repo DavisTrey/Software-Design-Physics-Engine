@@ -6,19 +6,26 @@ public class Muscle extends Spring{
 	
 	private double originalLength;
 	private double myAmplitude;
-	private static double myFrequency=1;
-	private static double myAmpIncrement=10;
+	private static final double DEFAULT_FREQUENCY=1;
+	private static final double DEFAULT_AMP_INCREMENT=1;
+	private static double myFrequency=DEFAULT_FREQUENCY; //preference
+	private static double myAmpIncrement=DEFAULT_AMP_INCREMENT;  //preference
 	private double myTime;
-	private static final double MUSCLE_INCREMENTATION_CONSTANT= .05;
+	private static final double DEFAULT_INCREMENT=.05;
+	private static final double MUSCLE_INCREMENTATION_CONSTANT= DEFAULT_INCREMENT;
 	public Muscle(PhysicalObjectCircle mass1, PhysicalObjectCircle mass2, double length,
 			double springiness, double amplitude) {
 		super(mass1, mass2, length, springiness);
 		myAmplitude = amplitude;
-		double myTime = 0;
+		myTime = 0;
 		originalLength = length;
 		restLength=originalLength;
 	}
 	
+	public static void setPreferences(double frequency, double ampIncrement){
+		myFrequency=frequency;
+		myAmpIncrement=ampIncrement;
+	}
 	@Override
 	protected void setColor() {
 		myEngine.setColor(JGColor.white);

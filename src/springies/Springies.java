@@ -47,8 +47,8 @@ import org.w3c.dom.NodeList;
 
 
 public class Springies extends JGEngine{
-	private double muscleAmplitudeIncrement=10;
-	private double wallIncrement=10;
+	private static final double DEFAULT_WALL_INCREMENT=10;
+	private static double myWallIncrement=DEFAULT_WALL_INCREMENT; //preference
 	protected static final String DEFAULT_VELOCITY="0";
 	protected static final String DEFAULT_MASS="1";
 	protected static final String DEFAULT_REST="150";
@@ -76,6 +76,9 @@ public class Springies extends JGEngine{
 	private MouseManager myMouse;
 	private Map<Character, Force> myForces = new HashMap<Character, Force>();
 	
+	public static void setPreferences(double wallIncrement){
+		myWallIncrement=wallIncrement;
+	}
 	public Set<Spring> returnSprings(){
 		return mySprings;
 	}
@@ -84,6 +87,12 @@ public class Springies extends JGEngine{
 	}
 	public Map<Integer, HashMap<String, PhysicalObjectCircle>> returnBodyMap(){
 		return myBodies;
+	}
+	public List<CenterOfMass> returnCenterOfMass(){
+		return myCentersOfMass;
+	}
+	public Wall[] returnWalls(){
+		return myWalls;
 	}
     public Springies (){
 
@@ -123,158 +132,11 @@ public class Springies extends JGEngine{
         }
         addWalls();
         addForces();
-        new XMLManager(this, assemblyNumber, myBodies, fullBodyList, mySprings).XMLMessage();
-        
+       XMLManager xml=new XMLManager(this, assemblyNumber, myBodies, fullBodyList, mySprings, myForces);
+       xml.XMLPreferences();
+       xml.loadObjectAndEnvironmentData();
     }
-    /*
-    public void XMLPreferences(){
-    	Frame message=new Frame();
-    	Object[] options={"Yes", "No"};
-    	int n=JOptionPane.showOptionDialog(message, "Would you like to loead a preference file?", "XML Loading", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-    	if(n==0){
-    		File dataFile=fileRetriever();
-    		readPreferences(dataFile);
-    	}
-    	
-    }
-    public void readPreferences(File datafile){
-    	try {
-    		Document doc=DocumentBuilder(datafile);
-    		new MusclePreferenceReader().readNodes("muscle", doc, this);
-
-
-    	} catch (Exception ex) {
-    		ex.printStackTrace();
-    	}
-    }
-
-    public void XMLMessage(){
-		try {
-			Frame message=new Frame();
-			JOptionPane.showMessageDialog(message, "Please load your object XML File");
-			File dataFile=fileRetriever();
-			readObjectData(dataFile);
-
-			message=new Frame();
-			Object[] options={"Yes", "No"};
-			int n=JOptionPane.showOptionDialog(message, "Would you like to load an enviroment file?", "XML Loading", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-			if(n==0){
-					dataFile=fileRetriever();
-				    readEnvironmentData(dataFile);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-    public File fileRetriever(){
-    	File dataFile = new File("");
-		JFileChooser chooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-		        "XML Files", "xml");
-		    chooser.setFileFilter(filter);
-		    int returnVal = chooser.showOpenDialog(getParent());
-		    if(returnVal == JFileChooser.APPROVE_OPTION) {
-				dataFile = chooser.getSelectedFile();
-		    }
-		    return dataFile;
-    }
-    
-    public Document DocumentBuilder(File dataFile){
-    	try{
-    		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-    		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-    		Document doc = dBuilder.parse(dataFile);
-    		doc.getDocumentElement().normalize();	
-    		return doc;
-    	} catch (Exception ex) {
-		ex.printStackTrace();
-	}
-    	return null; //To fix Eclipse error with returns in try{}
-    }
-   
-	public void readObjectData(File dataFile){
-		try {
-			Document doc=DocumentBuilder(dataFile);
-			new FixedReader().readNodes("fixed", doc, this);
-			new NormalMassReader().readNodes("mass", doc, this);
-			new SpringAndMuscleReader().readNodes("spring", doc, this);
-			new SpringAndMuscleReader().readNodes("muscle", doc, this);
-					
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	public void readEnvironmentData(File dataFile){
-		try {
-			Document doc=DocumentBuilder(dataFile);
-			new GravityReader().readNodes("gravity", doc, this);
-			new ViscosityReader().readNodes("viscosity", doc, this);
-			new CenterOfMassReader().readNodes("centermass", doc, this);
-			new WallReader().readNodes("wall", doc, this);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	
-	*/
-    public void alterGravity(String direction, String magnitude){
-    	double direct=Double.parseDouble(direction);
-    	double mag=Double.parseDouble(magnitude);
-    	myForces.put('G', new GravityForce(mag, direct));
-    }
-    public void alterViscosity(String magnitude){
-    	myForces.put('V', new ViscosityForce(Double.parseDouble(magnitude)));
-    }
-    public void alterCenterMass(String magnitude, String exponent){
-    	myForces.put('M', new CenterOfMassForce(Double.parseDouble(magnitude),Double.parseDouble(exponent), myCentersOfMass));
-    }
-    
-    public void alterWall(String id, String magnitude, String exponent){
-    	int wallIndex=(int)(Double.parseDouble(id)-1);
-    	double mag=Double.parseDouble(magnitude);
-    	double exp=Double.parseDouble(exponent);
-    	myForces.put((char)(wallIndex+49), new WallForce(mag, exp, wallIndex, myWalls[wallIndex]));
-    }
-    /*
-	public void createMuscle(String id1, String id2, String rest, String K, String amp){
-		double restLength=Double.parseDouble(rest);
-		double springConstant=Double.parseDouble(K);
-		double amplitude=Double.parseDouble(amp);
-		PhysicalObjectCircle mass1 = (PhysicalObjectCircle) myBodies.get(assemblyNumber).get(id1);
-		PhysicalObjectCircle mass2 = (PhysicalObjectCircle) myBodies.get(assemblyNumber).get(id2);
-		mySprings.add(new Muscle(mass1, mass2, restLength, springConstant, amplitude));
-	}
-	public void createSpring(String id1, String id2, String rest, String K){
-		double restLength=Double.parseDouble(rest);
-		double springConstant=Double.parseDouble(K);
-		PhysicalObjectCircle mass1 = (PhysicalObjectCircle) myBodies.get(assemblyNumber).get(id1);
-		PhysicalObjectCircle mass2 = (PhysicalObjectCircle) myBodies.get(assemblyNumber).get(id2);
-		mySprings.add(new Spring(mass1, mass2, restLength, springConstant));
-		
-	}
-	public void createMass(String id, String xpos, String ypos, String xveloc, String yveloc, String mass){
-		double xPosition=Double.parseDouble(xpos);
-		double yPosition=Double.parseDouble(ypos);
-		double xVelocity=Double.parseDouble(xveloc);
-		double yVelocity=Double.parseDouble(yveloc);
-		double massValue=Double.parseDouble(mass);
-		if(!myBodies.containsKey(assemblyNumber))
-			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
-		myBodies.get(assemblyNumber).put(id, new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber));
-		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
-	}
-	public void createFixed(String id, String xpos, String ypos){
-		double xPosition=Double.parseDouble(xpos);
-		double yPosition=Double.parseDouble(ypos);
-		if(!myBodies.containsKey(assemblyNumber))
-			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
-		myBodies.get(assemblyNumber).put(id, new FixedMass(id, xPosition, yPosition, assemblyNumber));
-		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
-	
-	}
-	*/
-
+ 
 	// addWalls must be called before this method is called!!!
 	private void addForces() {
 		myForces.put('G', new GravityForce(DEFAULT_GRAVITY, 90));
@@ -344,14 +206,14 @@ public class Springies extends JGEngine{
 		}
 		if(getKey(KeyUp)){
 			clearKey(KeyUp);
-			wallModifier+=10;
+			wallModifier+=myWallIncrement;
 			clearWalls();
 			addWalls();
 			updateWallForce();
 		}
 		if(getKey(KeyDown)){
 			clearKey(KeyDown);
-			wallModifier-=wallIncrement;
+			wallModifier-=myWallIncrement;
 			clearWalls();
 			addWalls();
 			updateWallForce();
@@ -373,7 +235,8 @@ public class Springies extends JGEngine{
 	        WorldManager.getWorld(assemblyNumber).setGravity(new Vec2(0.0f, 0.0f));
 			clearWalls();
 	        addWalls();
-			XMLMessage();
+	        new XMLManager(this, assemblyNumber, myBodies, fullBodyList, mySprings, myForces).loadObjectAndEnvironmentData();
+			
 		}
 		if(getKey('C')){
 			clearKey('C');

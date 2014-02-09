@@ -59,12 +59,13 @@ import org.w3c.dom.NodeList;
 
 
 public class XMLManager {
-	Springies mySpringies;
-	Map<Integer, HashMap<String, PhysicalObjectCircle>> myBodies;
-	int assemblyNumber;
-	Set<PhysicalObjectCircle> fullBodyList;
-	Set<Spring> mySprings;
-	Map<Character, Force> myForces;
+	private Springies mySpringies;
+	private Map<Integer, HashMap<String, PhysicalObjectCircle>> myBodies;
+	private int assemblyNumber;
+	private Set<PhysicalObjectCircle> fullBodyList;
+	private Set<Spring> mySprings;
+	private Map<Character, Force> myForces;
+	
 	public XMLManager(Springies s, int assemblyNumber, Map<Integer, HashMap<String, PhysicalObjectCircle>> bodies, Set<PhysicalObjectCircle> fullBodyList, Set<Spring> mySprings,  Map<Character, Force> myForces){
 		mySpringies=s;
 		myBodies=bodies;
@@ -77,7 +78,7 @@ public class XMLManager {
 	public void XMLPreferences(){
     	Frame message=new Frame();
     	Object[] options={"Yes", "No"};
-    	int n=JOptionPane.showOptionDialog(message, "Would you like to loead a preference file?", "XML Loading", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+    	int n=JOptionPane.showOptionDialog(message, "Would you like to load a preference file?", "XML Loading", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
     	if(n==0){
     		File dataFile=fileRetriever();
     		readPreferences(dataFile);
@@ -87,15 +88,13 @@ public class XMLManager {
     public void readPreferences(File datafile){
     	try {
     		Document doc=DocumentBuilder(datafile);
-    		new MusclePreferenceReader().readNodes("muscle", doc, this);
-
-
+    		new PreferenceReader().readNodes("preferences", doc, this);
     	} catch (Exception ex) {
     		ex.printStackTrace();
     	}
     }
 
-    public void XMLMessage(){
+    public void loadObjectAndEnvironmentData(){
 		try {
 			Frame message=new Frame();
 			JOptionPane.showMessageDialog(message, "Please load your object XML File");

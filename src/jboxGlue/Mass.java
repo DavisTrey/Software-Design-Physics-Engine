@@ -7,13 +7,15 @@ import jgame.JGObject;
 
 public class Mass extends PhysicalObjectCircle {
 	private static final double DEFAULT_RADIUS=4;
-	private static double massRadius=DEFAULT_RADIUS;
+	private static double massRadius=DEFAULT_RADIUS; //preference
 	public Mass(String id, double x, double y, double xvelo, double yvelo, double mass, int world){
 		super(id, 1, JGColor.white, massRadius, mass, world);
 		this.setPos(x, y);
 		this.setVelo(xvelo, yvelo);
 	}
-	
+	public static void setPreferences(double radius){
+		massRadius=radius;
+	}
 	public void setVelo(double x, double y){
         // there's no body while the game object is initializing
         if (myBody != null) { 

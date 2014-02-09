@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public abstract class XMLReadingAbstract{
-	protected static XMLManager myManager;
+	protected XMLManager myManager;
 	public void readNodes(String tag, Document doc, XMLManager m){
 		myManager=m;
     	NodeList nodes=doc.getElementsByTagName(tag);
@@ -26,5 +26,8 @@ public abstract class XMLReadingAbstract{
     		}
     	}
     }
+	public double parse(String s, Element e){
+		return Double.parseDouble(e.getAttribute(s));
+	}
 	public abstract void readData(Element element);
 }

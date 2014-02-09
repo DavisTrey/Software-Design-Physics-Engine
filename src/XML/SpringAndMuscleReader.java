@@ -22,7 +22,6 @@ public class SpringAndMuscleReader extends XMLReadingAbstract{
 			springConstant=DEFAULT_SPRINGCONSTANT;
 		}
 		if(amplitude!=""){
-			
 			myManager.createMuscle(id1, id2, restLength, springConstant, amplitude);
 		}
 		else{
