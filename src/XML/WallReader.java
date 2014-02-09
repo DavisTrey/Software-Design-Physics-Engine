@@ -11,7 +11,7 @@ public class WallReader extends XMLReadingAbstract {
 		String id=element.getAttribute("id");
 		String magnitude=element.getAttribute("magnitude");
 		String exponent=element.getAttribute("exponent");
-		mySpringies.alterWall(id, magnitude, exponent);
+		myManager.alterWall(id, magnitude, exponent);
 	}
 	
 }

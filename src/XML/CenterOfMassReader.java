@@ -11,7 +11,7 @@ public class CenterOfMassReader extends XMLReadingAbstract{
 		// TODO Auto-generated method stub
 		String magnitude=element.getAttribute("magnitude");
 		String exponent=element.getAttribute("exponent");
-		mySpringies.alterCenterMass(magnitude, exponent);
+		myManager.alterCenterMass(magnitude, exponent);
 	}
 	
 }

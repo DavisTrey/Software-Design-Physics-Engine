@@ -1,4 +1,11 @@
 package XML;
+import java.util.HashMap;
+
+import jboxGlue.FixedMass;
+import jboxGlue.Mass;
+import jboxGlue.Muscle;
+import jboxGlue.PhysicalObjectCircle;
+import jboxGlue.Spring;
 import springies.*;
 
 import org.w3c.dom.Document;
@@ -7,9 +14,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public abstract class XMLReadingAbstract{
-	protected static Springies mySpringies;
-	public void readNodes(String tag, Document doc, Springies sp){
-		mySpringies=sp;
+	protected static XMLManager myManager;
+	public void readNodes(String tag, Document doc, XMLManager m){
+		myManager=m;
     	NodeList nodes=doc.getElementsByTagName(tag);
     	for(int i=0; i<nodes.getLength(); i++){
     		Node node=nodes.item(i);

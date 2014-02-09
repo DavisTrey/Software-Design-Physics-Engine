@@ -1,6 +1,7 @@
 package XML;
 
 import org.w3c.dom.Element;
+import jboxGlue.Muscle;
 
 public class MusclePreferenceReader extends XMLReadingAbstract{
 
@@ -9,7 +10,6 @@ public class MusclePreferenceReader extends XMLReadingAbstract{
 		// TODO Auto-generated method stub
 		String freq=element.getAttribute("freq");
 		String ampIncrement=element.getAttribute("ampIncrement");
-		mySpringies.alterMusclePreferences(freq, ampIncrement);
 	}
 
 }

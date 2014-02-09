@@ -119,10 +119,10 @@ public class Springies extends JGEngine{
         }
         addWalls();
         addForces();
-        XMLPreferences();
-        XMLMessage();
+        new XMLManager(this, assemblyNumber, myBodies, fullBodyList, mySprings).XMLMessage();
         
     }
+    /*
     public void XMLPreferences(){
     	Frame message=new Frame();
     	Object[] options={"Yes", "No"};
@@ -212,6 +212,8 @@ public class Springies extends JGEngine{
 			ex.printStackTrace();
 		}
 	}
+	
+	*/
     public void alterGravity(String direction, String magnitude){
     	double direct=Double.parseDouble(direction);
     	double mag=Double.parseDouble(magnitude);
@@ -230,7 +232,7 @@ public class Springies extends JGEngine{
     	double exp=Double.parseDouble(exponent);
     	forces[wallIndex+3] = new WallForce(mag, exp, wallIndex, myWalls[wallIndex]);
     }
-    
+    /*
 	public void createMuscle(String id1, String id2, String rest, String K, String amp){
 		double restLength=Double.parseDouble(rest);
 		double springConstant=Double.parseDouble(K);
@@ -267,7 +269,7 @@ public class Springies extends JGEngine{
 		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
 	
 	}
-	
+	*/
 
 	// addWalls must be called before this method is called!!!
 	private void addForces() {
@@ -387,7 +389,7 @@ public class Springies extends JGEngine{
 	        WorldManager.initWorld(this);
 	        myCentersOfMass.add(new CenterOfMass(WorldManager.getWorld(assemblyNumber)));
 	        WorldManager.getWorld(assemblyNumber).setGravity(new Vec2(0.0f, 0.0f));
-			XMLMessage();
+			//XMLMessage();
 		}
 		if(getKey('C')){
 			clearKey('C');

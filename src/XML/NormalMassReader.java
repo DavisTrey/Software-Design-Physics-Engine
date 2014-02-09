@@ -23,7 +23,7 @@ public class NormalMassReader extends XMLReadingAbstract{
 			yVeloc=DEFAULT_VELOCITY;
 			xVeloc=DEFAULT_VELOCITY;
 		}
-		mySpringies.createMass(id, xpos, ypos, xVeloc, yVeloc, mass);
+		myManager.createMass(id, xpos, ypos, xVeloc, yVeloc, mass);
 	}
 
 }

@@ -10,7 +10,7 @@ public class ViscosityReader extends XMLReadingAbstract{
 	public void readData(Element element) {
 		// TODO Auto-generated method stub
 		String magnitude=element.getAttribute("magnitude");
-		mySpringies.alterViscosity(magnitude);
+		myManager.alterViscosity(magnitude);
 	}
 
 }

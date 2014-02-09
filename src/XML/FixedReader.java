@@ -11,7 +11,7 @@ public class FixedReader extends XMLReadingAbstract{
 		String id=element.getAttribute("id");
 		String xpos=element.getAttribute("x");
 		String ypos=element.getAttribute("y");
-		mySpringies.createFixed(id, xpos, ypos);
+		myManager.createFixed(id, xpos, ypos);
 	}
 
 }

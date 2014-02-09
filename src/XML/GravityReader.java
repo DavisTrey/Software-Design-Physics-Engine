@@ -11,7 +11,7 @@ public class GravityReader extends XMLReadingAbstract{
 		// TODO Auto-generated method stub
 		String direction=element.getAttribute("direction");
 		String magnitude=element.getAttribute("magnitude");
-		mySpringies.alterGravity(direction, magnitude);
+		myManager.alterGravity(direction, magnitude);
 	}
 
 }

@@ -1,5 +1,5 @@
 <preferences>
-    <muscle freq="10" ampIncrement="20"/>
+    <muscle freq="200" ampIncrement="20"/>
     <wall increment="20"/>
     <mass radius="10"/>
-</prefences>
+</preferences>

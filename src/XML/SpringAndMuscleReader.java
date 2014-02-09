@@ -23,10 +23,10 @@ public class SpringAndMuscleReader extends XMLReadingAbstract{
 		}
 		if(amplitude!=""){
 			
-			mySpringies.createMuscle(id1, id2, restLength, springConstant, amplitude);
+			myManager.createMuscle(id1, id2, restLength, springConstant, amplitude);
 		}
 		else{
-			mySpringies.createSpring(id1, id2, restLength, springConstant);
+			myManager.createSpring(id1, id2, restLength, springConstant);
 		}
 		
 	}
