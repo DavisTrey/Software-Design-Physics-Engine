@@ -64,12 +64,14 @@ public class XMLManager {
 	int assemblyNumber;
 	Set<PhysicalObjectCircle> fullBodyList;
 	Set<Spring> mySprings;
-	public XMLManager(Springies s, int assemblyNumber, Map<Integer, HashMap<String, PhysicalObjectCircle>> bodies, Set<PhysicalObjectCircle> fullBodyList, Set<Spring> mySprings){
+	Map<Character, Force> myForces;
+	public XMLManager(Springies s, int assemblyNumber, Map<Integer, HashMap<String, PhysicalObjectCircle>> bodies, Set<PhysicalObjectCircle> fullBodyList, Set<Spring> mySprings,  Map<Character, Force> myForces){
 		mySpringies=s;
 		myBodies=bodies;
 		this.assemblyNumber=assemblyNumber;
 		this.fullBodyList=fullBodyList;
 		this.mySprings=mySprings;
+		this.myForces=myForces;
 		
 	}
 	public void XMLPreferences(){
@@ -194,6 +196,23 @@ public class XMLManager {
 			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
 		myBodies.get(assemblyNumber).put(id, new FixedMass(id, xPosition, yPosition, assemblyNumber));
 		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
-	
 	}
+	public void alterGravity(String direction, String magnitude){
+    	double direct=Double.parseDouble(direction);
+    	double mag=Double.parseDouble(magnitude);
+    	myForces.put('G', new GravityForce(mag, direct));
+    }
+    public void alterViscosity(String magnitude){
+    	myForces.put('V', new ViscosityForce(Double.parseDouble(magnitude)));
+    }
+    public void alterCenterMass(String magnitude, String exponent){
+    	myForces.put('M', new CenterOfMassForce(Double.parseDouble(magnitude),Double.parseDouble(exponent), mySpringies.returnCenterOfMass()));
+    }
+    
+    public void alterWall(String id, String magnitude, String exponent){
+    	int wallIndex=(int)(Double.parseDouble(id)-1);
+    	double mag=Double.parseDouble(magnitude);
+    	double exp=Double.parseDouble(exponent);
+    	myForces.put((char)(wallIndex+49), new WallForce(mag, exp, wallIndex, mySpringies.returnWalls()[wallIndex]));
+    }
 }
