@@ -6,7 +6,7 @@ import org.jbox2d.dynamics.Body;
 public class ViscosityForce extends Force{
 
 	public ViscosityForce(double mag) {
-		super(mag);
+		super(mag, 'V');
 	}
 
 	public void applyForce(Body b) {

@@ -7,7 +7,7 @@ public class GravityForce extends Force{
 	private double direction;
 	private Vec2 myForce;
 	public GravityForce(double mag, double dir) {
-		super(mag);
+		super(mag, 'G');
 		direction = dir;
 		myForce = new Vec2((float)(magnitude*Math.cos(direction*3.14/180)),(float)(magnitude*Math.sin(direction*3.14/180)));
 	}

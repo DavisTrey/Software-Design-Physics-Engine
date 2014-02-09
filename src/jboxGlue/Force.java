@@ -5,9 +5,11 @@ import org.jbox2d.dynamics.Body;
 public abstract class Force {
 	protected double magnitude;
 	protected boolean isOn;
-	public Force(double mag){
+	private char myID;
+	public Force(double mag, char ID){
 		magnitude = mag;
 		isOn = true;
+		myID = ID;
 	}
 	public void toggleForce(){
 		isOn = !isOn;
@@ -19,6 +21,9 @@ public abstract class Force {
 		if(isOn){
 			applyForce(b);
 		}
+	}
+	public char getID(){
+		return myID;
 	}
 	public abstract void applyForce(Body b);
 }
