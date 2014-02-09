@@ -9,7 +9,7 @@ public class WallForce extends Force{
 	Wall myWall;
 	double exponent;
 	public WallForce(double mag, double exp, int id, Wall wall) {
-		super(mag);
+		super(mag, (char)(id+49));
 		wallId = id;
 		myWall = wall;
 		exponent = exp;

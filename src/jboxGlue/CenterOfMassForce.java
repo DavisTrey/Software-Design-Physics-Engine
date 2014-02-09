@@ -10,7 +10,7 @@ public class CenterOfMassForce extends Force {
 	double exponent;
 	List<CenterOfMass> myCenters;
 	public CenterOfMassForce(double mag, double power, List<CenterOfMass> c) {
-		super(mag);
+		super(mag, 'M');
 		exponent = power;
 		myCenters = c;
 	}

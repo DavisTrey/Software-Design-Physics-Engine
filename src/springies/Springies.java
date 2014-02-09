@@ -52,6 +52,13 @@ public class Springies extends JGEngine{
 	protected static final String DEFAULT_MASS="1";
 	protected static final String DEFAULT_REST="150";
 	protected static final String DEFAULT_SPRINGCONSTANT="1";
+	private static final char GRAVITY = 'G';
+	private static final char VISCOSITY = 'V';
+	private static final char CENTEROFMASS = 'M';
+	private static final char NORTHWALL = '1';
+	private static final char EASTWALL = '2';
+	private static final char SOUTH = '3';
+	private static final char WESTWALL = '4';
 	private static final double DEFAULT_GRAVITY = 20;
 	private static final double DEFAULT_VISCOSITY = 2;
 	private static final double DEFAULT_CENTEROFMASS_FORCE_CONSTANT = 20;
@@ -63,15 +70,14 @@ public class Springies extends JGEngine{
     private Set<Spring> mySprings=new HashSet<Spring>();
     private List<CenterOfMass> myCentersOfMass = new ArrayList<CenterOfMass>();
     private Wall[] myWalls= new Wall[4];
-	//protected static PhysicalObject[] walls = new PhysicalObject[4];
 	private int wallModifier = 0;
 	protected int assemblyNumber = 0;
 	private boolean clickOn;
 	private Mass clickMass;
 	private Mass targetMass;
 	private Spring clickSpring;
-	// Forces are indexed as follows: 0=gravity, 1=viscosity, 2=centerofmass, 3=top wall, 4=right wall, 5=bottom wall, 6=left wall
-	protected static Force[] forces = new Force[7];
+	private Map<Character, Force> myForces = new HashMap<Character, Force>();
+	//protected static Force[] forces = new Force[7];
 	
 	public Set<Spring> returnSprings(){
 		return mySprings;
@@ -215,20 +221,20 @@ public class Springies extends JGEngine{
     public void alterGravity(String direction, String magnitude){
     	double direct=Double.parseDouble(direction);
     	double mag=Double.parseDouble(magnitude);
-    	forces[0] = new GravityForce(mag, direct);
+    	myForces.put('G', new GravityForce(mag, direct));
     }
     public void alterViscosity(String magnitude){
-    	forces[1] = new ViscosityForce(Double.parseDouble(magnitude));
+    	myForces.put('V', new ViscosityForce(Double.parseDouble(magnitude)));
     }
     public void alterCenterMass(String magnitude, String exponent){
-    	forces[2] = new CenterOfMassForce(Double.parseDouble(magnitude),Double.parseDouble(exponent), myCentersOfMass);
+    	myForces.put('M', new CenterOfMassForce(Double.parseDouble(magnitude),Double.parseDouble(exponent), myCentersOfMass));
     }
     
     public void alterWall(String id, String magnitude, String exponent){
     	int wallIndex=(int)(Double.parseDouble(id)-1);
     	double mag=Double.parseDouble(magnitude);
     	double exp=Double.parseDouble(exponent);
-    	forces[wallIndex+3] = new WallForce(mag, exp, wallIndex, myWalls[wallIndex]);
+    	myForces.put((char)(wallIndex+49), new WallForce(mag, exp, wallIndex, myWalls[wallIndex]));
     }
     
 	public void createMuscle(String id1, String id2, String rest, String K, String amp){
@@ -271,13 +277,13 @@ public class Springies extends JGEngine{
 
 	// addWalls must be called before this method is called!!!
 	private void addForces() {
-		forces[0] = new GravityForce(DEFAULT_GRAVITY, 90);
-		forces[1] = new ViscosityForce(DEFAULT_VISCOSITY);
-		forces[2] = new CenterOfMassForce(DEFAULT_CENTEROFMASS_FORCE_CONSTANT, DEFAULT_CENTEROFMASS_EXPONENT, myCentersOfMass);
-		forces[3] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[0], DEFAULT_WALL_FORCE_EXPONENTS[0],0,myWalls[0]);
-		forces[4] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[1], DEFAULT_WALL_FORCE_EXPONENTS[1],1,myWalls[1]);
-		forces[5] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[2], DEFAULT_WALL_FORCE_EXPONENTS[2],2,myWalls[2]);
-		forces[6] = new WallForce(DEFAULT_WALL_FORCE_CONSTANT[3], DEFAULT_WALL_FORCE_EXPONENTS[3],3,myWalls[3]);
+		myForces.put('G', new GravityForce(DEFAULT_GRAVITY, 90));
+		myForces.put('V', new ViscosityForce(DEFAULT_VISCOSITY));
+		myForces.put('M', new CenterOfMassForce(DEFAULT_CENTEROFMASS_FORCE_CONSTANT, DEFAULT_CENTEROFMASS_EXPONENT, myCentersOfMass));
+		myForces.put('1', new WallForce(DEFAULT_WALL_FORCE_CONSTANT[0], DEFAULT_WALL_FORCE_EXPONENTS[0],0,myWalls[0]));
+		myForces.put('2', new WallForce(DEFAULT_WALL_FORCE_CONSTANT[1], DEFAULT_WALL_FORCE_EXPONENTS[1],1,myWalls[1]));
+		myForces.put('3', new WallForce(DEFAULT_WALL_FORCE_CONSTANT[2], DEFAULT_WALL_FORCE_EXPONENTS[2],2,myWalls[2]));
+		myForces.put('4', new WallForce(DEFAULT_WALL_FORCE_CONSTANT[3], DEFAULT_WALL_FORCE_EXPONENTS[3],3,myWalls[3]));
 	}
 
 	private void addWalls ()
@@ -311,8 +317,8 @@ public class Springies extends JGEngine{
 	}
 
 	private void updateWallForce() {
-		for(int i=3; i<7; i++){
-			((WallForce) forces[i]).editWall(myWalls[i-3]);
+		for(int i=0; i<4; i++){
+			((WallForce) myForces.get((char)(i+49))).editWall(myWalls[i]);
 		}
 	}
 
@@ -330,33 +336,11 @@ public class Springies extends JGEngine{
 
 	private void checkKeyInput() {
 		//Listen for key input
-		if(getKey('G')){
-			clearKey('G');
-			forces[0].toggleForce();
-		}
-		if(getKey('V')){
-			clearKey('V');
-			forces[1].toggleForce();
-		}
-		if(getKey('M')){
-			clearKey('M');
-			forces[2].toggleForce();
-		}
-		if(getKey('1')){
-			clearKey('1');
-			forces[3].toggleForce();
-		}
-		if(getKey('2')){
-			clearKey('2');
-			forces[4].toggleForce();
-		}
-		if(getKey('3')){
-			clearKey('3');
-			forces[5].toggleForce();
-		}
-		if(getKey('4')){
-			clearKey('4');
-			forces[6].toggleForce();
+		for(Character c: myForces.keySet()){
+			if(getKey(myForces.get(c).getID())){
+				clearKey(myForces.get(c).getID());
+				myForces.get(c).toggleForce();
+			}
 		}
 		if(getKey(KeyUp)){
 			clearKey(KeyUp);
@@ -471,8 +455,8 @@ public class Springies extends JGEngine{
 	}
 
 	private void applyForces(Body b) {
-		for(int i=0; i<7; i++){
-			forces[i].doForce(b);
+		for(Character c: myForces.keySet()){
+			myForces.get(c).doForce(b);
 		}
 	}
 
@@ -491,20 +475,12 @@ public class Springies extends JGEngine{
     public void paintFrame ()
     {
     	StringBuilder forceStatus = new StringBuilder();
-    	if(forces[0].isOn())
-    		forceStatus.append("G ");
-    	if(forces[1].isOn())
-    		forceStatus.append("V ");
-    	if(forces[2].isOn())
-    		forceStatus.append("M ");
-    	if(forces[3].isOn())
-    		forceStatus.append("1 ");
-    	if(forces[4].isOn())
-    		forceStatus.append("2 ");
-    	if(forces[5].isOn())
-    		forceStatus.append("3 ");
-    	if(forces[6].isOn())
-    		forceStatus.append("4 ");
+    	for(Character c: myForces.keySet()){
+    		if(myForces.get(c).isOn()){
+    			forceStatus.append(myForces.get(c).getID());
+    			forceStatus.append(' ');
+    		}
+    	}
 		drawString(forceStatus.toString(), 20,20,-1);
     }
 
