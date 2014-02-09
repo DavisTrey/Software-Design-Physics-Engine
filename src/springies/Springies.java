@@ -23,6 +23,7 @@ import jboxGlue.FixedMass;
 import jboxGlue.Force;
 import jboxGlue.GravityForce;
 import jboxGlue.Mass;
+import jboxGlue.MouseManager;
 import jboxGlue.Muscle;
 import jboxGlue.PhysicalObject;
 import jboxGlue.PhysicalObjectCircle;
@@ -72,12 +73,8 @@ public class Springies extends JGEngine{
     private Wall[] myWalls= new Wall[4];
 	private int wallModifier = 0;
 	protected int assemblyNumber = 0;
-	private boolean clickOn;
-	private Mass clickMass;
-	private Mass targetMass;
-	private Spring clickSpring;
+	private MouseManager myMouse;
 	private Map<Character, Force> myForces = new HashMap<Character, Force>();
-	//protected static Force[] forces = new Force[7];
 	
 	public Set<Spring> returnSprings(){
 		return mySprings;
@@ -120,6 +117,7 @@ public class Springies extends JGEngine{
         WorldManager.initWorld(this);
         WorldManager.getWorld(0).setGravity(new Vec2(0.0f, 0.0f));
         myCentersOfMass.add(new CenterOfMass(WorldManager.getWorld(0)));
+        myMouse = new MouseManager();
         for(int i=0; i<4; i++){
         	myWalls[i] = new Wall();
         }
@@ -391,37 +389,35 @@ public class Springies extends JGEngine{
 
 	private void checkMouseInput() {
 		if(getMouseButton(1)){
-			if(!clickOn&&!fullBodyList.isEmpty()){
-				for(PhysicalObjectCircle p : fullBodyList){
-					if(p instanceof Mass){
-					if(targetMass==null){
-						targetMass = (Mass) p;
-					}
-					else{
-						if(Math.pow(Math.pow(p.getBody().m_xf.position.x-getMouseX(), 2)+Math.pow(p.getBody().m_xf.position.y-getMouseY(), 2), .5)
-								<Math.pow(Math.pow(targetMass.getBody().m_xf.position.x-getMouseX(), 2)+Math.pow(targetMass.getBody().m_xf.position.y-getMouseY(), 2), .5))
-							targetMass = (Mass)p;
-					}
-					}
-				}
-				clickOn = true;
-				clickMass = new Mass("-1", (double)getMouseX(), getMouseY(), (double)0, (double)0, (double).1, targetMass.getWorldID());
-				clickSpring = new Spring(clickMass, targetMass, 
-						Math.pow(Math.pow(targetMass.getBody().m_xf.position.x-getMouseX(), 2)+Math.pow(targetMass.getBody().m_xf.position.y-getMouseY(), 2), .5), 2);
+			if(!myMouse.isOn()&&!fullBodyList.isEmpty()){
+				turnOnMouseListener();
 			}
-			if(clickMass!=null)
-				clickMass.setPos(getMouseX(), getMouseY());
+			if(myMouse.isOn())
+				myMouse.setPos(getMouseX(), getMouseY());
 		}
 		if(!getMouseButton(1)){
-			if(clickOn){
-				clickOn=false;
-				targetMass = null;
-				clickMass.destroy();
-				clickMass = null;
-				clickSpring.destroy();
-				clickSpring = null;
+			if(myMouse.isOn())
+				myMouse.turnOff();
+		}
+	}
+	private void turnOnMouseListener() {
+		Mass targetMass = null;
+		for(PhysicalObjectCircle p : fullBodyList){
+			if(p instanceof Mass){
+			if(targetMass==null){
+				targetMass = (Mass) p;
+			}
+			else{
+				if(Math.pow(Math.pow(p.getBody().m_xf.position.x-getMouseX(), 2)+Math.pow(p.getBody().m_xf.position.y-getMouseY(), 2), .5)
+						<Math.pow(Math.pow(targetMass.getBody().m_xf.position.x-getMouseX(), 2)+Math.pow(targetMass.getBody().m_xf.position.y-getMouseY(), 2), .5))
+					targetMass = (Mass)p;
+			}
 			}
 		}
+		Mass clickMass = new Mass("-1", (double)getMouseX(), getMouseY(), (double)0, (double)0, (double).1, targetMass.getWorldID());
+		Spring clickSpring = new Spring(clickMass, targetMass, 
+				Math.pow(Math.pow(targetMass.getBody().m_xf.position.x-getMouseX(), 2)+Math.pow(targetMass.getBody().m_xf.position.y-getMouseY(), 2), .5), 2);
+		myMouse = new MouseManager(targetMass, clickMass, clickSpring);
 	}
 
 
@@ -466,8 +462,8 @@ public class Springies extends JGEngine{
 				((Muscle) s).incrementMuscle();
 			s.applyForce();
 		}
-		if(clickSpring!=null)
-			clickSpring.applyForce();
+		if(myMouse.isOn())
+			myMouse.applyForce();
 	}
 
 
