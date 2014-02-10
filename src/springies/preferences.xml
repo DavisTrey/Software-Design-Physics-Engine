@@ -1,2 +1,2 @@
-<preferences muscleFreq="200" muscleAmpIncrement="20" massRadius="10" fixedRadius="1" wallIncrement="20"/>
+<preferences muscleFreq="200" muscleAmpIncrement="20" massRadius="10" fixedRadius="1" wallIncrement="20" springColor1="1" springColor2="2" muscleColor1="3" muscleColor2="4"/>
 
