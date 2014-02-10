@@ -27,6 +27,7 @@ public class PreferenceReader extends XMLReadingAbstract{
 		double wallIncrement=parseInteger("wallIncrement", element);
 		Springies.setPreferences(wallIncrement);
 		
+		/*
 		double springColor1=parse("springColor1", element);
 		double springColor2=parse("springColor2", element);
 		Spring.setColors(springColor1, springColor2);
@@ -44,6 +45,7 @@ public class PreferenceReader extends XMLReadingAbstract{
 		int massColor7=(int)parse("mass7", element);
 		int massColor8=(int)parse("mass8", element);
 		PhysicalObjectCircle.setColors(massColor1, massColor2, massColor3, massColor4, massColor5, massColor6, massColor7, massColor8);
+		*/
 	}
 
 }
