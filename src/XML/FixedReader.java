@@ -9,8 +9,8 @@ public class FixedReader extends XMLReadingAbstract{
 	public void readData(Element element) {
 		// TODO Auto-generated method stub
 		String id=element.getAttribute("id");
-		String xpos=element.getAttribute("x");
-		String ypos=element.getAttribute("y");
+		double xpos=parseInteger("x", element);
+		double ypos=parseInteger("y", element);
 		myManager.createFixed(id, xpos, ypos);
 	}
 

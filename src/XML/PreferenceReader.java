@@ -12,17 +12,17 @@ public class PreferenceReader extends XMLReadingAbstract{
 	@Override
 	public void readData(Element element) {
 		// TODO Auto-generated method stub
-		double muscleFreq=parse("muscleFreq", element);
-		double muscleAmpIncrement=parse("muscleAmpIncrement", element);
+		double muscleFreq=parseInteger("muscleFreq", element);
+		double muscleAmpIncrement=parseInteger("muscleAmpIncrement", element);
 		Muscle.setPreferences(muscleFreq, muscleAmpIncrement);
 		
-		double massRadius=parse("massRadius", element);
+		double massRadius=parseInteger("massRadius", element);
 		Mass.setPreferences(massRadius);
 		
-		double fixedRadius=parse("fixedRadius", element);
+		double fixedRadius=parseInteger("fixedRadius", element);
 		FixedMass.setPreferences(fixedRadius);
 		
-		double wallIncrement=parse("wallIncrement", element);
+		double wallIncrement=parseInteger("wallIncrement", element);
 		Springies.setPreferences(wallIncrement);
 		
 	}

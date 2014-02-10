@@ -177,23 +177,16 @@ public class XMLManager {
 		mySprings.add(new Spring(mass1, mass2, restLength, springConstant));
 		
 	}
-	public void createMass(String id, String xpos, String ypos, String xveloc, String yveloc, String mass){
-		double xPosition=Double.parseDouble(xpos);
-		double yPosition=Double.parseDouble(ypos);
-		double xVelocity=Double.parseDouble(xveloc);
-		double yVelocity=Double.parseDouble(yveloc);
-		double massValue=Double.parseDouble(mass);
+	public void createMass(String id, double xpos, double ypos, double xveloc, double yveloc, double mass){
 		if(!myBodies.containsKey(assemblyNumber))
 			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
-		myBodies.get(assemblyNumber).put(id, new Mass(id, xPosition, yPosition, xVelocity, yVelocity, massValue, assemblyNumber));
+		myBodies.get(assemblyNumber).put(id, new Mass(id, xpos, ypos, xveloc, yveloc, mass, assemblyNumber));
 		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
 	}
-	public void createFixed(String id, String xpos, String ypos){
-		double xPosition=Double.parseDouble(xpos);
-		double yPosition=Double.parseDouble(ypos);
+	public void createFixed(String id, double xpos, double ypos){
 		if(!myBodies.containsKey(assemblyNumber))
 			myBodies.put(assemblyNumber, new HashMap<String, PhysicalObjectCircle>());
-		myBodies.get(assemblyNumber).put(id, new FixedMass(id, xPosition, yPosition, assemblyNumber));
+		myBodies.get(assemblyNumber).put(id, new FixedMass(id, xpos, ypos, assemblyNumber));
 		fullBodyList.add(myBodies.get(assemblyNumber).get(id));
 	}
 	public void alterGravity(String direction, String magnitude){
