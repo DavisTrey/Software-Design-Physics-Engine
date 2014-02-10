@@ -161,20 +161,15 @@ public class XMLManager {
 			ex.printStackTrace();
 		}
 	}
-	public void createMuscle(String id1, String id2, String rest, String K, String amp){
-		double restLength=Double.parseDouble(rest);
-		double springConstant=Double.parseDouble(K);
-		double amplitude=Double.parseDouble(amp);
+	public void createMuscle(String id1, String id2, double rest, double K, double amp){
 		PhysicalObjectCircle mass1 = (PhysicalObjectCircle) myBodies.get(assemblyNumber).get(id1);
 		PhysicalObjectCircle mass2 = (PhysicalObjectCircle) myBodies.get(assemblyNumber).get(id2);
-		mySprings.add(new Muscle(mass1, mass2, restLength, springConstant, amplitude));
+		mySprings.add(new Muscle(mass1, mass2, rest, K, amp));
 	}
-	public void createSpring(String id1, String id2, String rest, String K){
-		double restLength=Double.parseDouble(rest);
-		double springConstant=Double.parseDouble(K);
+	public void createSpring(String id1, String id2, double rest, double K){
 		PhysicalObjectCircle mass1 = (PhysicalObjectCircle) myBodies.get(assemblyNumber).get(id1);
 		PhysicalObjectCircle mass2 = (PhysicalObjectCircle) myBodies.get(assemblyNumber).get(id2);
-		mySprings.add(new Spring(mass1, mass2, restLength, springConstant));
+		mySprings.add(new Spring(mass1, mass2, rest, K));
 		
 	}
 	public void createMass(String id, double xpos, double ypos, double xveloc, double yveloc, double mass){

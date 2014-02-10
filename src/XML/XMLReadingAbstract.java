@@ -19,6 +19,9 @@ public abstract class XMLReadingAbstract{
 	protected Map<String, Double> defaultMap;
 	protected static final double DEFAULT_VELOCITY=0;
 	protected static final double DEFAULT_MASS=1;
+	protected static final double DEFAULT_REST=(double)150;
+	protected static final double DEFAULT_SPRINGCONSTANT=(double)1;
+	
 	public void readNodes(String tag, Document doc, XMLManager m){
 		initializeDefaultMap();
 		myManager=m;
@@ -37,8 +40,8 @@ public abstract class XMLReadingAbstract{
 	public void initializeDefaultMap(){
 		defaultMap.put("vx", DEFAULT_VELOCITY);
 		defaultMap.put("mass", DEFAULT_MASS);
-		
-		
+		defaultMap.put("restlength", DEFAULT_REST);
+		defaultMap.put("constant", DEFAULT_SPRINGCONSTANT);
 	}
 	public double testForDefault(String s, Element e){
 		if(e.getAttribute(s)==""){

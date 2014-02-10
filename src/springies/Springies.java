@@ -50,9 +50,6 @@ public class Springies extends JGEngine{
 	private static final double DEFAULT_WALL_INCREMENT=10;
 	private static double myWallIncrement=DEFAULT_WALL_INCREMENT; //preference
 	protected static final String DEFAULT_VELOCITY="0";
-	protected static final String DEFAULT_MASS="1";
-	protected static final String DEFAULT_REST="150";
-	protected static final String DEFAULT_SPRINGCONSTANT="1";
 	private static final char GRAVITY = 'G';
 	private static final char VISCOSITY = 'V';
 	private static final char CENTEROFMASS = 'M';
