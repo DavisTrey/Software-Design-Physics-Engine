@@ -13,6 +13,8 @@ public class Muscle extends Spring{
 	private double myTime;
 	private static final double DEFAULT_INCREMENT=.05;
 	private static final double MUSCLE_INCREMENTATION_CONSTANT= DEFAULT_INCREMENT;
+	private static int musclePositiveColor=1;
+	private static int muscleNegativeColor=5;
 	public Muscle(PhysicalObjectCircle mass1, PhysicalObjectCircle mass2, double length,
 			double springiness, double amplitude) {
 		super(mass1, mass2, length, springiness);
@@ -30,10 +32,10 @@ public class Muscle extends Spring{
 	protected void setColor() {
 		myEngine.setColor(JGColor.white);
 		if(Math.sin(myTime)>0){
-			myEngine.setColor(new JGColor((int)(255*Math.sin(myTime)), (int)(255*Math.sin(myTime)), 255));
+			color(musclePositiveColor, 255*Math.sin(myTime));
 		}
 		if(Math.sin(myTime)<0){
-			myEngine.setColor(new JGColor(255, (int)(-255*Math.sin(myTime)), (int)(-255*Math.sin(myTime))));
+			color(muscleNegativeColor, -255*Math.sin(myTime));
 		}
 	}
 	public void incrementMuscle(){
@@ -46,6 +48,10 @@ public class Muscle extends Spring{
 	}
 	public void decrementAmplitude(){
 		myAmplitude-=myAmpIncrement;
+	}
+	public static void setColors(double springColor1, double springColor2) {
+		musclePositiveColor = (int)springColor1;
+		muscleNegativeColor = (int)springColor2;
 	}
 	
 }
