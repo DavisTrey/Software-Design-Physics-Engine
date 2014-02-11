@@ -43,9 +43,9 @@ public class Spring extends JGObject{
 	}
 	protected void color(String springStretchColor2, double argument){
 		if(springStretchColor2.equals("grey")){
-			myEngine.setColor(new JGColor(255-(int)Math.max(Math.min(255,argument), 0),
-					255-(int)Math.max(Math.min(255,argument), 0),
-					255-(int)Math.max(Math.min(255,argument), 0)));
+			myEngine.setColor(new JGColor(255-(int)Math.max(Math.min(200,argument), 0),
+					255-(int)Math.max(Math.min(200,argument), 0),
+					255-(int)Math.max(Math.min(200,argument), 0)));
 		}
 		if(springStretchColor2.equals("red")){
 			myEngine.setColor(new JGColor(255,
