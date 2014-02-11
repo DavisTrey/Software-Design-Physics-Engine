@@ -49,13 +49,12 @@ import org.w3c.dom.NodeList;
 public class Springies extends JGEngine{
 	private static final double DEFAULT_WALL_INCREMENT=10;
 	private static double myWallIncrement=DEFAULT_WALL_INCREMENT; //preference
-	protected static final String DEFAULT_VELOCITY="0";
 	private static final char GRAVITY = 'G';
 	private static final char VISCOSITY = 'V';
 	private static final char CENTEROFMASS = 'M';
 	private static final char NORTHWALL = '1';
 	private static final char EASTWALL = '2';
-	private static final char SOUTH = '3';
+	private static final char SOUTHWALL = '3';
 	private static final char WESTWALL = '4';
 	private static final double DEFAULT_GRAVITY = 20;
 	private static final double DEFAULT_VISCOSITY = 2;
@@ -139,10 +138,10 @@ public class Springies extends JGEngine{
 		myForces.put('G', new GravityForce(DEFAULT_GRAVITY, 90));
 		myForces.put('V', new ViscosityForce(DEFAULT_VISCOSITY));
 		myForces.put('M', new CenterOfMassForce(DEFAULT_CENTEROFMASS_FORCE_CONSTANT, DEFAULT_CENTEROFMASS_EXPONENT, myCentersOfMass));
-		myForces.put('1', new WallForce(DEFAULT_WALL_FORCE_CONSTANT[0], DEFAULT_WALL_FORCE_EXPONENTS[0],0,myWalls[0]));
-		myForces.put('2', new WallForce(DEFAULT_WALL_FORCE_CONSTANT[1], DEFAULT_WALL_FORCE_EXPONENTS[1],1,myWalls[1]));
-		myForces.put('3', new WallForce(DEFAULT_WALL_FORCE_CONSTANT[2], DEFAULT_WALL_FORCE_EXPONENTS[2],2,myWalls[2]));
-		myForces.put('4', new WallForce(DEFAULT_WALL_FORCE_CONSTANT[3], DEFAULT_WALL_FORCE_EXPONENTS[3],3,myWalls[3]));
+		myForces.put(NORTHWALL, new WallForce(DEFAULT_WALL_FORCE_CONSTANT[0], DEFAULT_WALL_FORCE_EXPONENTS[0],0,myWalls[0]));
+		myForces.put(EASTWALL, new WallForce(DEFAULT_WALL_FORCE_CONSTANT[1], DEFAULT_WALL_FORCE_EXPONENTS[1],1,myWalls[1]));
+		myForces.put(SOUTHWALL, new WallForce(DEFAULT_WALL_FORCE_CONSTANT[2], DEFAULT_WALL_FORCE_EXPONENTS[2],2,myWalls[2]));
+		myForces.put(WESTWALL, new WallForce(DEFAULT_WALL_FORCE_CONSTANT[3], DEFAULT_WALL_FORCE_EXPONENTS[3],3,myWalls[3]));
 	}
 
 	private void addWalls ()
@@ -192,7 +191,18 @@ public class Springies extends JGEngine{
         moveObjects();
         checkCollision(2, 1);
     }
-
+	public void checkWallKey(int key){
+		clearKey(key);
+		if(key==KeyUp){
+			wallModifier+=myWallIncrement;
+		}
+		else{
+			wallModifier-=myWallIncrement;
+		}
+		clearWalls();
+		addWalls();
+		updateWallForce();
+	}
 	private void checkKeyInput() {
 		//Listen for key input
 		for(Character c: myForces.keySet()){
@@ -202,18 +212,10 @@ public class Springies extends JGEngine{
 			}
 		}
 		if(getKey(KeyUp)){
-			clearKey(KeyUp);
-			wallModifier+=myWallIncrement;
-			clearWalls();
-			addWalls();
-			updateWallForce();
+			checkWallKey(KeyUp);
 		}
 		if(getKey(KeyDown)){
-			clearKey(KeyDown);
-			wallModifier-=myWallIncrement;
-			clearWalls();
-			addWalls();
-			updateWallForce();
+			checkWallKey(KeyDown);
 		}
 		if(getKey('=')||getKey('+')){
 			clearKey('=');
