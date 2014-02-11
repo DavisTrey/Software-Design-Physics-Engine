@@ -1,5 +1,7 @@
 package XML;
 
+import java.util.HashMap;
+
 import org.w3c.dom.Element;
 
 import springies.Springies;
@@ -8,6 +10,7 @@ import jboxGlue.Mass;
 import jboxGlue.Muscle;
 import jboxGlue.PhysicalObjectCircle;
 import jboxGlue.Spring;
+import jgame.JGColor;
 
 public class PreferenceReader extends XMLReadingAbstract{
 
@@ -35,17 +38,26 @@ public class PreferenceReader extends XMLReadingAbstract{
 		String muscleColor2=element.getAttribute("muscleColor2");
 		Muscle.setColors(muscleColor1, muscleColor2);
 		
-		/*
-		int massColor1=(int)parse("mass1", element);
-		int massColor2=(int)parse("mass2", element);
-		int massColor3=(int)parse("mass3", element);
-		int massColor4=(int)parse("mass4", element);
-		int massColor5=(int)parse("mass5", element);
-		int massColor6=(int)parse("mass6", element);
-		int massColor7=(int)parse("mass7", element);
-		int massColor8=(int)parse("mass8", element);
-		PhysicalObjectCircle.setColors(massColor1, massColor2, massColor3, massColor4, massColor5, massColor6, massColor7, massColor8);
-		*/
+		String massColor1=element.getAttribute("mass1");
+		String massColor2=element.getAttribute("mass2");
+		String massColor3=element.getAttribute("mass3");
+		String massColor4=element.getAttribute("mass4");
+		String massColor5=element.getAttribute("mass5");
+		String massColor6=element.getAttribute("mass6");
+		String massColor7=element.getAttribute("mass7");
+		String massColor8=element.getAttribute("mass8");
+		HashMap<String, JGColor> colorMap = new HashMap<String, JGColor>();
+		colorMap.put("white", JGColor.white);
+		colorMap.put("red", JGColor.red);
+		colorMap.put("cyan", JGColor.cyan);
+		colorMap.put("magenta", JGColor.magenta);
+		colorMap.put("yellow", JGColor.yellow);
+		colorMap.put("pink", JGColor.pink);
+		colorMap.put("grey", JGColor.grey);
+		colorMap.put("blue", JGColor.blue);
+		PhysicalObjectCircle.setColors(colorMap.get(massColor1), colorMap.get(massColor2),
+				colorMap.get(massColor3), colorMap.get(massColor4), colorMap.get(massColor5), 
+				colorMap.get(massColor6), colorMap.get(massColor7), colorMap.get(massColor8));
 	}
 
 }

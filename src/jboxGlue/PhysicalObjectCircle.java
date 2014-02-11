@@ -7,16 +7,14 @@ import org.jbox2d.collision.CircleDef;
 public class PhysicalObjectCircle extends PhysicalObject
 {
     private double myRadius;
-    private static int myColor1 = 0;
-    private static int myColor2 = 1;
-    private static int myColor3 = 2;
-    private static int myColor4 = 3;
-    private static int myColor5 = 4;
-    private static int myColor6 = 5;
-    private static int myColor7 = 6;
-    private static int myColor8 = 7;
-    private static final JGColor[] massColors = {JGColor.white, JGColor.red, JGColor.cyan, JGColor.magenta, 
-    	JGColor.yellow, JGColor.pink, JGColor.gray, JGColor.blue};
+    private static JGColor myColor1 = JGColor.white;
+    private static JGColor myColor2 = JGColor.red;
+    private static JGColor myColor3 = JGColor.cyan;
+    private static JGColor myColor4 = JGColor.magenta;
+    private static JGColor myColor5 = JGColor.yellow;
+    private static JGColor myColor6 = JGColor.pink;
+    private static JGColor myColor7 = JGColor.grey;
+    private static JGColor myColor8 = JGColor.blue;
     public PhysicalObjectCircle (String id,
                                  int collisionId,
                                  JGColor color,
@@ -25,21 +23,21 @@ public class PhysicalObjectCircle extends PhysicalObject
     {
         super(id, collisionId, color, world);
         if(world%8==0)
-        	myColor = massColors[myColor1];
+        	myColor = myColor1;
 		if(world%8==1)
-			myColor = massColors[myColor2];
+        	myColor = myColor2;
 		if(world%8==2)
-			myColor = massColors[myColor3];
+        	myColor = myColor3;
 		if(world%8==3)
-			myColor = massColors[myColor4];
+        	myColor = myColor4;
 		if(world%8==4)
-			myColor = massColors[myColor5];
+        	myColor = myColor5;
 		if(world%8==5)
-			myColor = massColors[myColor6];
+        	myColor = myColor6;
 		if(world%8==6)
-			myColor = massColors[myColor7];
+        	myColor = myColor7;
 		if(world%8==7)
-			myColor = massColors[myColor8];
+        	myColor = myColor8;
         init(radius, mass);
     }
 
@@ -81,9 +79,9 @@ public class PhysicalObjectCircle extends PhysicalObject
         myEngine.drawOval(x, y, (float)myRadius * 2, (float)myRadius * 2, true, true);
     }
 
-	public static void setColors(int massColor1, int massColor2,
-			int massColor3, int massColor4, int massColor5, int massColor6,
-			int massColor7, int massColor8) {
+	public static void setColors(JGColor massColor1, JGColor massColor2,
+			JGColor massColor3, JGColor massColor4, JGColor massColor5, JGColor massColor6,
+			JGColor massColor7, JGColor massColor8) {
 		myColor1 = massColor1;
 		myColor2 = massColor2;
 		myColor3 = massColor3;
