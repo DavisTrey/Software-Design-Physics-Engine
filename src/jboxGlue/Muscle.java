@@ -13,8 +13,8 @@ public class Muscle extends Spring{
 	private double myTime;
 	private static final double DEFAULT_INCREMENT=.05;
 	private static final double MUSCLE_INCREMENTATION_CONSTANT= DEFAULT_INCREMENT;
-	private static int musclePositiveColor=1;
-	private static int muscleNegativeColor=5;
+	private static String musclePositiveColor="red";
+	private static String muscleNegativeColor="blue";
 	public Muscle(PhysicalObjectCircle mass1, PhysicalObjectCircle mass2, double length,
 			double springiness, double amplitude) {
 		super(mass1, mass2, length, springiness);
@@ -49,9 +49,9 @@ public class Muscle extends Spring{
 	public void decrementAmplitude(){
 		myAmplitude-=myAmpIncrement;
 	}
-	public static void setColors(double springColor1, double springColor2) {
-		musclePositiveColor = (int)springColor1;
-		muscleNegativeColor = (int)springColor2;
+	public static void setColors(String springColor1, String springColor2) {
+		musclePositiveColor = springColor1;
+		muscleNegativeColor = springColor2;
 	}
 	
 }
