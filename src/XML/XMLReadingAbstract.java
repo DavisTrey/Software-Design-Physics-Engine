@@ -39,6 +39,7 @@ public abstract class XMLReadingAbstract{
 	}
 	public void initializeDefaultMap(){
 		defaultMap.put("vx", DEFAULT_VELOCITY);
+		defaultMap.put("vy", DEFAULT_VELOCITY);
 		defaultMap.put("mass", DEFAULT_MASS);
 		defaultMap.put("restlength", DEFAULT_REST);
 		defaultMap.put("constant", DEFAULT_SPRINGCONSTANT);
