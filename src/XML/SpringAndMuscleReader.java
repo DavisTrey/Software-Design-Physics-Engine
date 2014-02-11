@@ -11,8 +11,8 @@ public class SpringAndMuscleReader extends XMLReadingAbstract{
 		// TODO Auto-generated method stub
 		String id1=element.getAttribute("a");
 		String id2=element.getAttribute("b");
-		double restLength=parseInteger("restlength", element);
-		double springConstant=parseInteger("constant", element);
+		double restLength=testForDefault("restlength", element);
+		double springConstant=testForDefault("constant", element);
 		String amplitude=element.getAttribute("amplitude"); //Dont use parseInteger to check for existence of amplitude
 		
 		if(amplitude!=""){

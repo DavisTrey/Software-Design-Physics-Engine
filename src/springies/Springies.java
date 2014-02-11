@@ -129,9 +129,9 @@ public class Springies extends JGEngine{
         }
         addWalls();
         addForces();
-       XMLManager xml=new XMLManager(this, assemblyNumber, myBodies, fullBodyList, mySprings, myForces);
-       xml.XMLPreferences();
-       xml.loadObjectAndEnvironmentData();
+        XMLManager xml=new XMLManager(this, assemblyNumber, myBodies, fullBodyList, mySprings, myForces);
+        xml.XMLPreferences();
+        xml.loadObjectAndEnvironmentData();
     }
  
 	// addWalls must be called before this method is called!!!
