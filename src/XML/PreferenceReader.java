@@ -27,15 +27,15 @@ public class PreferenceReader extends XMLReadingAbstract{
 		double wallIncrement=parseInteger("wallIncrement", element);
 		Springies.setPreferences(wallIncrement);
 		
-		/*
-		double springColor1=parse("springColor1", element);
-		double springColor2=parse("springColor2", element);
+		String springColor1=element.getAttribute("springColor1");
+		String springColor2=element.getAttribute("springColor2");
 		Spring.setColors(springColor1, springColor2);
 		
-		double muscleColor1=parse("muscleColor1", element);
-		double muscleColor2=parse("muscleColor2", element);
+		String muscleColor1=element.getAttribute("muscleColor1");
+		String muscleColor2=element.getAttribute("muscleColor2");
 		Muscle.setColors(muscleColor1, muscleColor2);
 		
+		/*
 		int massColor1=(int)parse("mass1", element);
 		int massColor2=(int)parse("mass2", element);
 		int massColor3=(int)parse("mass3", element);

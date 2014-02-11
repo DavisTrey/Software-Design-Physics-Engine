@@ -16,7 +16,7 @@ import org.w3c.dom.NodeList;
 
 public abstract class XMLReadingAbstract{
 	protected XMLManager myManager;
-	protected Map<String, Double> defaultMap;
+	protected Map<String, Double> defaultMap = new HashMap<String, Double>();
 	protected static final double DEFAULT_VELOCITY=0;
 	protected static final double DEFAULT_MASS=1;
 	protected static final double DEFAULT_REST=(double)150;

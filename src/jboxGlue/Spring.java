@@ -15,8 +15,8 @@ public class Spring extends JGObject{
 	protected double restLength;
 	private double springConstant;
 	private boolean isDestroyed;
-	private static int springStretchColor=2;
-	private static int springCompressColor=4;
+	private static String springStretchColor="purple";
+	private static String springCompressColor="grey";
 	public Spring(PhysicalObjectCircle mass1, PhysicalObjectCircle mass2, double length, double springiness){
 		super("spring", true, 0, 0 ,0, null);
 		restLength=length;
@@ -41,41 +41,41 @@ public class Spring extends JGObject{
 			color(springCompressColor, (getLength()-restLength)*2);
 		}
 	}
-	protected void color(int i, double argument){
-		if(i==0){
+	protected void color(String springStretchColor2, double argument){
+		if(springStretchColor2.equals("grey")){
 			myEngine.setColor(new JGColor(255-(int)Math.max(Math.min(255,argument), 0),
 					255-(int)Math.max(Math.min(255,argument), 0),
 					255-(int)Math.max(Math.min(255,argument), 0)));
 		}
-		if(i==1){
+		if(springStretchColor2.equals("red")){
 			myEngine.setColor(new JGColor(255,
 					255-(int)Math.max(Math.min(255,argument), 0),
 					255-(int)Math.max(Math.min(255,argument), 0)));
 		}
-		if(i==2){
+		if(springStretchColor2.equals("green")){
 			myEngine.setColor(new JGColor(255-(int)Math.max(Math.min(255,argument), 0),
 					255,
 					255-(int)Math.max(Math.min(255,argument), 0)));
 		}
-		if(i==3){
+		if(springStretchColor2.equals("blue")){
 			myEngine.setColor(new JGColor(255-(int)Math.max(Math.min(255,argument), 0),
 					255-(int)Math.max(Math.min(255,argument), 0),
 					255));
 		}
-		if(i==4){
+		if(springStretchColor2.equals("teal")){
 			myEngine.setColor(new JGColor(255-(int)Math.max(Math.min(255,argument), 0),
 					255,
 					255));
 		}
-		if(i==5){
+		if(springStretchColor2.equals("purple")){
 			myEngine.setColor(new JGColor(255,
 					255-(int)Math.max(Math.min(255,argument), 0),
 					255));
 		}
-		if(i==6){
-			myEngine.setColor(new JGColor(255-(int)Math.max(argument, 0),
+		if(springStretchColor2.equals("orange")){
+			myEngine.setColor(new JGColor(255,
 					255,
-					255));
+					255-(int)Math.max(argument, 0)));
 		}
 	}
 	public void applyForce(){
@@ -110,9 +110,9 @@ public class Spring extends JGObject{
 		double yVector=myMass1.getBody().m_xf.position.y-myMass2.getBody().m_xf.position.y;
 		return Math.pow(Math.pow(xVector, 2)+Math.pow(yVector, 2), .5);
 	}
-	public static void setColors(double springColor1, double springColor2) {
-		springStretchColor = (int)springColor1;
-		springCompressColor = (int)springColor2;
+	public static void setColors(String springColor1, String springColor2) {
+		springStretchColor = springColor1;
+		springCompressColor = springColor2;
 	}
 }
 
